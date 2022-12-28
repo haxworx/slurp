@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  database:
+    container_name: slurp-database
+    image: mysql
+    build:
+      context: ./docker/database
+    environment:
+      # You should definitely change the passwords in production
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_USER=username
+      - MYSQL_PASSWORD=password
+      - MYSQL_DATABASE=slurp
+    volumes:
+      - db-data:/var/lib/mysql:rw
+    ports:
+      - "3306:3306"
+
+  apache:
+    container_name: slurp-apache
+    image: php8.1-apache
+    build:
+      context: ./docker/apache
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    ports:
+      - "8080:80"
+
+volumes:
+  db-data:
