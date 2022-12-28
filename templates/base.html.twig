@@ -20,10 +20,11 @@
                     <a href="{{ path('app_dashboard') }}">
                         Home
                     </a>
-
+{% if app.user %}
 		   <a href="{{ path('app_logout') }}">
                        Logout
                    </a>
+{% endif %}
                 </li>
             </ul>
         </header>
