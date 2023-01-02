@@ -11,11 +11,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Notifier\Notification\Notification;
+use Symfony\Component\Notifier\NotifierInterface;
 
 class ScheduleController extends AbstractController
 {
     #[Route('/schedule', name: 'app_schedule')]
-    public function index(Request $request, ManagerRegistry $doctrine): Response
+    public function index(Request $request, ManagerRegistry $doctrine, NotifierInterface $notifier): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
@@ -32,6 +34,8 @@ class ScheduleController extends AbstractController
 
             $entityManager->persist($settings);
             $entityManager->flush();
+
+            $notifier->send(new Notification('Robot scheduled.', ['browser']));
 
             return $this->redirectToRoute('app_dashboard');
         }

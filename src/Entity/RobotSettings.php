@@ -61,7 +61,7 @@ class RobotSettings
     private ?int $scanDelay = null;
 
     #[ORM\Column]
-    private ?bool $hasError = null;
+    private ?bool $hasError = false;
 
     public function getId(): ?int
     {
