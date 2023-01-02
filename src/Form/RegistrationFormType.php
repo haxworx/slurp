@@ -1,8 +1,11 @@
 <?php
 
+// src/Form/RegistrationFormType.php
+
 namespace App\Form;
 
 use App\Entity\User;
+use App\Validator\ConfirmPassword;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -41,6 +44,13 @@ class RegistrationFormType extends AbstractType
                         // max length allowed by Symfony for security reasons
                         'max' => 4096,
                     ]),
+                ],
+            ])
+            ->add('confirmPassword', PasswordType::class, [
+                'mapped' => false,
+                'constraints' => [
+                    new NotBlank(),
+                    new ConfirmPassword(),
                 ],
             ])
         ;
