@@ -32,7 +32,14 @@
                                     Home
                                 </a>
                             </li>
+                        </ul>
 {% if is_granted('ROLE_USER') %}
+                        <ul class="nav navbar-nav mr-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_schedule') }}">
+                                    Schedule
+                                </a>
+                            </li>
                         </ul>
                         <ul class="nav navbar-nav ms-auto">
                             <li class="nav-item">
