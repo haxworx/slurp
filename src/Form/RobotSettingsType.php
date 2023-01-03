@@ -1,5 +1,7 @@
 <?php
 
+// src/Form/RobotSettingsType;
+
 namespace App\Form;
 
 use App\Entity\RobotSettings;
@@ -25,9 +27,16 @@ class RobotSettingsType extends AbstractType
                 ],
             ],)
             ->add('userAgent', TextType::class)
-            ->add('importSitemaps', CheckBoxType::class)
-            ->add('retryMax', NumberType::class)
-            ->add('scanDelay', NumberType::class)
+            ->add('importSitemaps', CheckBoxType::class, [
+                'label' => 'Import sitemaps?',
+                'data' => $options['import_sitemaps'],
+            ])
+            ->add('retryMax', NumberType::class, [
+                'html5' => true,
+            ])
+            ->add('scanDelay', NumberType::class, [
+                'html5' => true,
+            ])
             ->add('startTime')
             ->add('save', SubmitType::class, [
                 'label' => 'Save',
@@ -39,6 +48,8 @@ class RobotSettingsType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => RobotSettings::class,
+            'import_sitemaps' => true,
         ]);
     }
 }
+
