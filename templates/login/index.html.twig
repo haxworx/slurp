@@ -3,11 +3,12 @@
 {% block title %}Hello LoginController!{% endblock %}
 
 {% block body %}
+    <div {{ stimulus_controller('login') }}>
     {% if error %}
-        <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
     {% endif %}
 
-    <form action="{{ path('app_login') }}" method="post">
+    <form data-login-target="form" action="{{ path('app_login') }}" method="post">
         <label for="username">Email:</label>
         <input type="text" id="username" name="_username" value="{{ last_username }}" class="form-control">
         <label for="password">Password:</label>
@@ -18,4 +19,5 @@
     </form>
     <br>
     <p>Not registered? Register <a href="{{ path('app_register') }}">here</a>.</p>
+    </div>
 {% endblock %}
