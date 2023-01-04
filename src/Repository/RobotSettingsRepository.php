@@ -30,6 +30,16 @@ class RobotSettingsRepository extends ServiceEntityRepository
         }
     }
 
+    public function countByUserId(int $userId): int
+    {
+        return $this->createQueryBuilder('c')
+            ->select('count(c.userId)')
+            ->where('c.userId = :id')
+            ->setParameter('id', $userId)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     public function remove(RobotSettings $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
@@ -38,29 +48,4 @@ class RobotSettingsRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
-
-//    /**
-//     * @return RobotSettings[] Returns an array of RobotSettings objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('r')
-//            ->andWhere('r.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('r.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?RobotSettings
-//    {
-//        return $this->createQueryBuilder('r')
-//            ->andWhere('r.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }

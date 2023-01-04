@@ -5,6 +5,7 @@
 namespace App\Controller;
 
 use App\Entity\RobotSettings;
+use App\Entity\GlobalSettings;
 use App\Form\RobotSettingsType;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,23 +22,31 @@ class ScheduleController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
+        $user = $this->getUser();
+
         $settings = new RobotSettings();
+
+        $globalSettings = $doctrine->getRepository(GlobalSettings::class)->findOneBy(['id' => 1]);
 
         $form = $this->createForm(RobotSettingsType::class, $settings);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $repository = $doctrine->getRepository(RobotSettings::class);
+            $robotCount = $repository->countByUserId($user->getId());
+            if ($robotCount >= $globalSettings->getMaxRobots()) {
+                $notifier->send(new Notification('Reached maximum number of robots (' . $robotCount . ')', ['browser']));
+            } else {
+                $entityManager = $doctrine->getManager();
+                $settings->setUserId($this->getUser()->getId());
 
-            $entityManager = $doctrine->getManager();
-            $settings->setUserId($this->getUser()->getId());
+                $entityManager->persist($settings);
+                $entityManager->flush();
 
-            $entityManager->persist($settings);
-            $entityManager->flush();
+                $notifier->send(new Notification('Robot scheduled.', ['browser']));
 
-            $notifier->send(new Notification('Robot scheduled.', ['browser']));
-
-            return $this->redirectToRoute('app_dashboard');
+                return $this->redirectToRoute('app_dashboard');
+            }
         }
 
         return $this->render('schedule/index.html.twig', [
