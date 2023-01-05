@@ -40,6 +40,19 @@ class RobotSettingsRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
+    public function domainExists(RobotSettings $settings, int $userId): bool
+    {
+        return (bool) $this->createQueryBuilder('c')
+            ->where('c.userId = :id')
+            ->setParameter('id', $userId)
+            ->andWhere('c.domainName = :domain')
+            ->setParameter('domain', $settings->getDomainName())
+            ->andWhere('c.scheme = :scheme')
+            ->setParameter('scheme', $settings->getScheme())
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     public function remove(RobotSettings $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
