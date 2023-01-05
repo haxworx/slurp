@@ -33,9 +33,11 @@ class RobotSettingsType extends AbstractType
             ])
             ->add('retryMax', NumberType::class, [
                 'html5' => true,
+                'data' => 5,
             ])
             ->add('scanDelay', NumberType::class, [
                 'html5' => true,
+                'data' => 1,
             ])
             ->add('startTime')
             ->add('save', SubmitType::class, [
