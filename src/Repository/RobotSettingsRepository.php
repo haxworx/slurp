@@ -61,4 +61,13 @@ class RobotSettingsRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+
+    public function findAllByUserId(int $userId): array
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.userId = :id')
+            ->setParameter('id', $userId)
+            ->getQuery()
+            ->getResult();
+    }
 }
