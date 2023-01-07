@@ -90,6 +90,13 @@ export default class extends Controller {
 
             td = document.createElement('td');
             td.textContent = '';
+            let a = document.createElement('a');
+            a.href = '/schedule/edit/' + robot.id
+            let i = document.createElement(i);
+            i.classList.add('fa-solid');
+            i.classList.add('fa-pen-to-square');
+            a.appendChild(i);
+            td.appendChild(a);
             tr.appendChild(td);
             tbody.appendChild(tr);
         });
