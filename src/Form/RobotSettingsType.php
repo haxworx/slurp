@@ -51,6 +51,9 @@ class RobotSettingsType extends AbstractType
         $resolver->setDefaults([
             'data_class' => RobotSettings::class,
             'import_sitemaps' => true,
+            'save_button_label' => 'Create',
+            'delete_button_hidden' => true,
+            'address_readonly' => false,
         ]);
     }
 }

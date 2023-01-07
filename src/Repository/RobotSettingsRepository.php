@@ -70,4 +70,15 @@ class RobotSettingsRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findOneByUserIdAndBotId(int $userId, int $botId)
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.userId = :userId')
+            ->setParameter('userId', $userId)
+            ->andWhere('c.id = :botId')
+            ->setParameter('botId', $botId)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

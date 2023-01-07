@@ -21,12 +21,15 @@ export default class extends Controller {
     }
 
     drawTable(robots) {
-        let tb = document.createElement('table');
+        let tb, thead, th, tr, tbody = [ null, null, null, null, null ];
+
+        tb = document.createElement('table');
         tb.classList.add('table');
         tb.classList.add('table-striped');
-        let thead = document.createElement('thead');
-        let tr = document.createElement('tr');
-        let th = document.createElement('th');
+
+        thead = document.createElement('thead');
+        tr = document.createElement('tr');
+        th = document.createElement('th');
         th.textContent = "id";
         tr.appendChild(th);
 
@@ -56,6 +59,9 @@ export default class extends Controller {
         thead.appendChild(tr);
         tb.appendChild(thead);
 
+        tbody = document.createElement('tbody');
+        tb.appendChild(tbody);
+
         robots.forEach(robot => {
             let tr = document.createElement('tr');
             let td = document.createElement('td');
@@ -77,11 +83,15 @@ export default class extends Controller {
             td = document.createElement('td');
             td.textContent = this.fuzzyTime(robot.endTime);
             tr.appendChild(td);
-            tb.appendChild(tr);
 
             td = document.createElement('td');
             td.textContent = (robot.isRunning) ? "true" : false;
             tr.appendChild(td);
+
+            td = document.createElement('td');
+            td.textContent = '';
+            tr.appendChild(td);
+            tbody.appendChild(tr);
         });
         let content = this.contentTarget;
         content.appendChild(tb);
@@ -93,7 +103,7 @@ export default class extends Controller {
 
         let date = new Date(input);
 
-        return date.toLocaleTimeString();
+        return date.toLocaleTimeString('UTC');
     }
 
    fuzzyTime(input) {

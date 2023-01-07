@@ -92,7 +92,7 @@ class RobotSettings
         return $this;
     }
 
-    public function isImportSitemaps(): ?bool
+    public function ImportSitemaps(): ?bool
     {
         return $this->importSitemaps;
     }

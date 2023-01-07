@@ -58,4 +58,41 @@ class ScheduleController extends AbstractController
             'form' => $form,
         ]);
     }
+
+    #[Route('/schedule/edit/{botId}', name: 'app_schedule_edit')]
+    public function edit(Request $request, ManagerRegistry $doctrine, NotifierInterface $notifier, int $botId): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+    
+        $user = $this->getUser();
+
+        $robot = $doctrine->getRepository(RobotSettings::class)->findOneByUserIdAndBotId($user->getId(), $botId);
+        if (!$robot) {
+            throw $this->createNotFoundException(
+                'No robot for id: ' . $botId
+            );
+        }
+
+        $form = $this->createForm(RobotSettingsType::class, $robot, [
+            'save_button_label' => 'Update',
+            'delete_button_hidden' => false,
+            'import_sitemaps' => $robot->ImportSitemaps(),
+            'address_readonly' => true,
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->IsValid()) {
+            $repository = $doctrine->getRepository(RobotSettings::class);
+            
+            $entityManager = $doctrine->getManager();
+            $entityManager->persist($robot);
+            $entityManager->flush();
+            $notifier->send(new Notification('Robot updated', ['browser']));
+        }
+
+        return $this->render('schedule/index.html.twig', [
+            'form' => $form
+        ]);
+    }
 }
