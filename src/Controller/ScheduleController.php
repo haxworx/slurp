@@ -66,17 +66,17 @@ class ScheduleController extends AbstractController
     
         $user = $this->getUser();
 
-        $robot = $doctrine->getRepository(RobotSettings::class)->findOneByUserIdAndBotId($user->getId(), $botId);
-        if (!$robot) {
+        $settings = $doctrine->getRepository(RobotSettings::class)->findOneByUserIdAndBotId($user->getId(), $botId);
+        if (!$settings) {
             throw $this->createNotFoundException(
                 'No robot for id: ' . $botId
             );
         }
 
-        $form = $this->createForm(RobotSettingsType::class, $robot, [
+        $form = $this->createForm(RobotSettingsType::class, $settings, [
             'save_button_label' => 'Update',
             'delete_button_hidden' => false,
-            'import_sitemaps' => $robot->ImportSitemaps(),
+            'import_sitemaps' => $settings->ImportSitemaps(),
             'address_readonly' => true,
         ]);
 
@@ -84,11 +84,15 @@ class ScheduleController extends AbstractController
 
         if ($form->isSubmitted() && $form->IsValid()) {
             $repository = $doctrine->getRepository(RobotSettings::class);
-            
-            $entityManager = $doctrine->getManager();
-            $entityManager->persist($robot);
-            $entityManager->flush();
-            $notifier->send(new Notification('Robot updated', ['browser']));
+            $exists = $repository->domainExists($settings, $user->getId());
+            if ($exists) {
+                $notifier->send(new Notification('Robot exists with that scheme and domain.', ['browser']));
+            } else {
+                $entityManager = $doctrine->getManager();
+                $entityManager->persist($settings);
+                $entityManager->flush();
+                $notifier->send(new Notification('Robot updated', ['browser']));
+            }
         }
 
         return $this->render('schedule/index.html.twig', [

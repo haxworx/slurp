@@ -42,7 +42,8 @@ class RobotSettingsRepository extends ServiceEntityRepository
 
     public function domainExists(RobotSettings $settings, int $userId): bool
     {
-        return (bool) $this->createQueryBuilder('c')
+        $n = $this->createQueryBuilder('c')
+            ->select('count(c.userId)')
             ->where('c.userId = :id')
             ->setParameter('id', $userId)
             ->andWhere('c.domainName = :domain')
@@ -50,7 +51,8 @@ class RobotSettingsRepository extends ServiceEntityRepository
             ->andWhere('c.scheme = :scheme')
             ->setParameter('scheme', $settings->getScheme())
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getSingleScalarResult();
+        return $n > 0 ? true : false;
     }
 
     public function remove(RobotSettings $entity, bool $flush = false): void
