@@ -6,8 +6,8 @@ export default class extends Controller {
     static targets = ['content'];
 
     connect() {
-        console.log("hello world");
         this.refreshTable();
+        setInterval(this.refreshTable.bind(this), 30000);
     }
 
 
