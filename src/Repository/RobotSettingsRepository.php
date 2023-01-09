@@ -83,4 +83,14 @@ class RobotSettingsRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    public function deleteAllByUserId(int $userId): void
+    {
+        $this->createQueryBuilder('c')
+            ->delete()
+            ->where('c.userId = :userId')
+            ->setParameter('userId', $userId)
+            ->getQuery()
+            ->execute();
+    }
 }

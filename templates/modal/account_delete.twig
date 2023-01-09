@@ -1,7 +1,7 @@
- <div {{ stimulus_controller('delete-account', {
-       token: csrf_token('delete-account'),
+ <div {{ stimulus_controller('account-delete', {
+       token: csrf_token('account-delete'),
   }) }}>
-    <div class="modal" tabindex="-1" data-delete-account-target="modal">
+    <div class="modal" tabindex="-1" data-account-delete-target="modal">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -13,24 +13,24 @@
             <p>To confirm please enter "yes i understand completely".</p>
             <div class="form-group">
             <div class="input-group">
-              <input class="confirm" type="text" data-delete-account-target="confirm">
+              <input class="confirm" type="text" data-account-delete-target="confirm">
             </div>
             </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <a href="#" {{ stimulus_action('delete-account', 'remove') }}><div data-delete-account-target="button" class="btn btn-danger disabled">Delete</div></a>
+                <a href="#" {{ stimulus_action('account-delete', 'remove') }}><div data-account-delete-target="button" class="btn btn-danger disabled">Delete</div></a>
           </div>
         </div>
       </div>
     </div>
     <p>Delete all application data and user account. There is no way to recover data following this action.</p>
-    <button type="button" class="btn btn-danger" data-action="delete-account#confirm">
+    <button type="button" class="btn btn-danger" data-action="account-delete#confirm">
     Delete Account
     </button>
     <br>
     <div class="clearfix">
-        <div data-delete-account-target="spinner" class="visually-hidden spinner-border text-primary float-end" role="status">
+        <div data-account-delete-target="spinner" class="visually-hidden spinner-border text-primary float-end" role="status">
         </div>
     </div>
 </div>
