@@ -1,5 +1,6 @@
  <div {{ stimulus_controller('robot-delete', {
-       token: csrf_token('robot-delete')
+       token: csrf_token('robot-delete'),
+       botId: botId,
   }) }}>
     <div class="modal" tabindex="-1" data-robot-delete-target="modal" data-dashboard-target="modal">
       <div class="modal-dialog">
@@ -20,4 +21,5 @@
         </div>
       </div>
     </div>
+    <a data-toggle="tooltip" title="Delete" href="#" data-action="robot-delete#confirm"><i class="fa-solid fa-trash"></i></a>
 </div>

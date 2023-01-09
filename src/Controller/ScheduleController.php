@@ -10,6 +10,7 @@ use App\Form\RobotSettingsType;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Notifier\Notification\Notification;
@@ -98,5 +99,38 @@ class ScheduleController extends AbstractController
         return $this->render('schedule/index.html.twig', [
             'form' => $form
         ]);
+    }
+    
+    #[Route('/schedule/delete/{botId}', name: 'app_schedule_delete', format: 'json', methods: ['POST'])]
+    public function rm(Request $request, ManagerRegistry $doctrine, NotifierInterface $notifier, int $botId): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
+        $user = $this->getUser();
+
+        $jsonContent = json_decode($request->getContent(), false);
+        $botId = $jsonContent->botId;
+        $token = $jsonContent->token;
+
+        if (!$this->isCsrfTokenValid('robot-delete', $token)) {
+            throw new \Exception('Invalid CSRF token');
+        }
+
+        $settings = $doctrine->getRepository(RobotSettings::class)->findOneByUserIdAndBotId($user->getId(), $botId);
+        if (!$settings) {
+            throw $this->createNotFoundException(
+                'No robot for id: ' . $botId
+            );
+        }
+
+        $entityManager = $doctrine->getManager();
+        $entityManager->remove($settings);
+        $entityManager->flush();
+        
+        $notifier->send(New Notification('Robot removed.', ['browser']));
+
+        $response = new JsonResponse(['message' => 'ok']);
+
+        return $response;
     }
 }

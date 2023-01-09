@@ -3,8 +3,30 @@
 {% block title %}Dashboard{% endblock %}
 {% block body %}
 <div {{ stimulus_controller('dashboard') }}>
-    <div data-dashboard-target='content'>
-    
-    </div>
+    <table class="table table-striped">
+        <thead>
+            <th>id</th>
+            <th>address</th>
+            <th>agent</th>
+            <th>start</th>
+            <th>finish</th>
+            <th class="text-center">actions</th>
+        </thead>
+        <tbody>
+            {% for bot in settings %}
+                <tr> 
+                    <td>{{ bot.id }}</td>
+                    <td>{{ bot.domainName }}</td>
+                    <td>{{ bot.userAgent }}</td>
+                    <td>{{ bot.startTime | date('H:i') }}</td>
+                    <td>{{ bot.endTime | date('H:i') }}</td>
+                    <td class="text-center">
+                        <a href="{{ path('app_schedule_edit', { botId: bot.id }) }}" <i class="fa-solid fa-edit"></a>
+                        {{ include('modal/robot_delete.twig', { 'botId': bot.id }) }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}
