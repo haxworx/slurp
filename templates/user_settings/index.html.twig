@@ -1,20 +1,43 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello UserSettingsController!{% endblock %}
+{% block title %}User Settings{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+<h1>User Settings</h1>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/home/alastair/Code/slurp/src/Controller/UserSettingsController.php'|file_link(0) }}">src/Controller/UserSettingsController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/home/alastair/Code/slurp/templates/user_settings/index.html.twig'|file_link(0) }}">templates/user_settings/index.html.twig</a></code></li>
-    </ul>
+<div class="pt-3">
+    <hr>
+    <h3>API Token</h3>
+    <p>Your API token (do not disclose to any other party):</p>
+    <div {{ stimulus_controller('regenerate-api-key', {
+        token: csrf_token('regenerate-api-key'),
+    }) }}>
+        <a href="#" {{ stimulus_action('regenerate-api-key', 'generate')}}>
+            <div class="btn btn-sm btn-primary">Regenerate</div></a>
+        <div class="d-inline" data-regenerate-api-key-target="text">{{ api_key }}</div>
+        <div data-regenerate-api-key-target="spinner" class="d-inline visually-hidden spinner-border text-primary float-end" role="status">
+    </div>
+    </div>
 </div>
+
+<div class="pt-3">
+    <hr>
+    <h3>Change Password</h3>
+    <p>Enter your current password and your desired new password.</p>
+
+    <hr>
+
+    {{ form(form) }}
+
+    <hr>
+</div>
+
+<div class="pt-3">
+    <h3>Dangerous Settings</h3>
+    <hr>
+
+    {{ include('modal/delete_account.twig') }}
+</div>
+
 {% endblock %}
