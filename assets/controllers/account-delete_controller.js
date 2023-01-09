@@ -23,6 +23,7 @@ export default class extends Controller {
         this.buttonTarget.classList.add("disabled");
         this.modal.show();
     }
+
     remove(event) {
         event.preventDefault();
 
@@ -53,6 +54,7 @@ export default class extends Controller {
         })
         .catch((error) => {
             let notification = new Notification("An error has occurred.", true)
+            notification.show();
             console.error('Error:', error);
         });
     }
