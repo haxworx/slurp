@@ -3,6 +3,8 @@
 {% block title %}Dashboard{% endblock %}
 {% block body %}
 <div {{ stimulus_controller('dashboard') }}>
+    <h3>Robots</h3>
+    <hr>
     {%if settings|length == 0 %}
     <p class="text-center">Your robots will appear here once scheduled.</p>
     {% else %}
@@ -19,8 +21,8 @@
             {% for bot in settings %}
                 <tr> 
                     <td>{{ bot.id }}</td>
-                    <td>{{ bot.domainName }}</td>
-                    <td>{{ bot.userAgent }}</td>
+                    <td>{{ bot.domainName|ellipsis }}</td>
+                    <td>{{ bot.userAgent|ellipsis }}</td>
                     <td>{{ bot.startTime | date('H:i') }}</td>
                     <td>{{ bot.endTime | date('H:i') }}</td>
                     <td class="text-center">
