@@ -24,7 +24,7 @@
                     <td>{{ bot.domainName|ellipsis }}</td>
                     <td>{{ bot.userAgent|ellipsis }}</td>
                     <td>{{ bot.startTime | date('H:i') }}</td>
-                    <td>{{ bot.endTime | date('H:i') }}</td>
+                    <td>{{ bot.endTime | fuzzy_date }}</td>
                     <td class="text-center">
                         <a title="Edit" href="{{ path('app_schedule_edit', { botId: bot.id }) }}" <i class="fa-solid fa-edit"></a>
                         {{ include('modal/robot_delete.twig', { 'botId': bot.id }) }}

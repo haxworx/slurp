@@ -6,6 +6,7 @@ namespace App\Twig;
 
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
+use App\Utils\FuzzyDateTime;
 
 class AppExtension extends AbstractExtension
 {
@@ -13,6 +14,7 @@ class AppExtension extends AbstractExtension
     {
         return [
             new TwigFilter('ellipsis', [$this, 'ellipsis']),
+            new TwigFilter('fuzzy_date', [$this, 'fuzzyDate']),
         ];
     }
 
@@ -23,5 +25,10 @@ class AppExtension extends AbstractExtension
             return substr($text, 0, 32) . '...';
         }
         return $text;
+    }
+
+    public function fuzzyDate(?\DateTime $dateTime): string
+    {
+        return FuzzyDateTime::get($dateTime);
     }
 }
