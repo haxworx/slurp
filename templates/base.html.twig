@@ -63,6 +63,17 @@
                 </div>
             </nav>
         </header>
+        <div {{ stimulus_controller('theme') }}>
+{% if is_granted('ROLE_USER') %}
+            <div class="container mt-5" align="right">
+                <p>Logged in as {{ app.user.email }}.</p>
+            </div>
+{% endif %}
+            <div class="container mt-5" align="right">
+                <button type="button" data-theme-target="themeToggle" class="btn btn-primary btn-sm" data-toggle="button" aria-pressed="false" autocomplete="off">
+                    Dark
+                </button>
+            </div>
         {{ include('modal/legal.twig') }}
         <main role="main" class="container mt-5" id="main">
         {% for message in app.flashes('notification') %}
