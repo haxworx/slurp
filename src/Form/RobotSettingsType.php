@@ -33,6 +33,7 @@ class RobotSettingsType extends AbstractType
             ->add('userAgent', TextType::class)
             ->add('importSitemaps', CheckBoxType::class, [
                 'label' => 'Import sitemaps?',
+                'required' => false,
                 'data' => $options['import_sitemaps'],
             ])
             ->add('retryMax', NumberType::class, [
