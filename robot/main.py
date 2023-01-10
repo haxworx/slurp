@@ -18,7 +18,7 @@ from hypertext import Http
 
 class Robot:
     def __init__(self, bot_id):
-        self.wanted_content = "text/html|text/plain"
+        self.wanted_content = "text/html|text/plain|application/json|text/css|application/xml|text/xml"
         self.compile_regexes()
         self.bot_id = bot_id
         self.config = Config(self.bot_id);
@@ -89,6 +89,8 @@ class Robot:
         return metadata
 
     def fetch_all(self):
+        self.get_robots_txt()
+
         if self.config.import_sitemaps:
             sm = SiteMaps(self)
             sm.parse()
@@ -98,7 +100,13 @@ class Robot:
         # Walk the page list, appending as we go.
         for page in self.page_list:
             self.url = page.url
+
+            # Check our URL against robots text rules.
+            if not self.rp.can_fetch(self.config.user_agent, self.url):
+                continue
             print(self.url)
+
+
             parsed_url = urlparse(self.url)
             (scheme, path, query) = (parsed_url.scheme, parsed_url.path,
                                      parsed_url.query)
@@ -131,19 +139,23 @@ class Robot:
 
                 self.url = response.url
 
+                # Extract HTTP header values of interest.
                 content_type = Http.string(response.headers['Content-Type'])
                 length = Http.int(response.headers['content-length'])
                 modified = Http.date(response.headers['last-modified'])
 
+                # Ensure the content type is wanted.
                 matches = self.wanted.search(content_type)
                 if matches:
+                    # Attempt to extract a precise character encoding.
                     content_type = matches.group(0)
-                    metadata = self.metadata_extract(response.headers)
                     encoding = 'iso-8859-1'
                     matches = self.charset.search(response.headers['content-type'])
                     if matches:
                         encoding = matches.group(1)
+
                     data = response.read()
+                    metadata = self.metadata_extract(response.headers)
                     checksum = hashlib.md5(data)
 
                     res = {
@@ -177,12 +189,12 @@ class Robot:
                                 if self.page_list.append(url, link_source=page.url):
                                     count += 1
                     if count:
-                        print("found {}" . format(self.url))
+                        print("found {}" . format(count))
                 response.close()
                 time.sleep(self.config.scan_delay)
+
 def main(bot_id):
     robot = Robot(bot_id)
-    robot.get_robots_txt()
     robot.fetch_all()
 
 if __name__ == '__main__':
