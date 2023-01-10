@@ -76,9 +76,8 @@ class ScheduleController extends AbstractController
 
         $form = $this->createForm(RobotSettingsType::class, $settings, [
             'save_button_label' => 'Update',
-            'delete_button_hidden' => false,
             'import_sitemaps' => $settings->ImportSitemaps(),
-            'address_readonly' => true,
+            'domain_readonly' => true,
         ]);
 
         $form->handleRequest($request);

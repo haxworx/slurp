@@ -19,13 +19,17 @@ class RobotSettingsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('domainName', TextType::class)
+            ->add('domainName', TextType::class, [
+                'attr' => [
+                    'readonly' => $options['domain_readonly'],
+                ],
+            ])
             ->add('scheme', ChoiceType::class, [
                 'choices' => [
                     'http' => 'http',
                     'https' => 'https',
                 ],
-            ],)
+            ])
             ->add('userAgent', TextType::class)
             ->add('importSitemaps', CheckBoxType::class, [
                 'label' => 'Import sitemaps?',
@@ -41,7 +45,7 @@ class RobotSettingsType extends AbstractType
             ])
             ->add('startTime')
             ->add('save', SubmitType::class, [
-                'label' => 'Save',
+                'label' => $options['save_button_label'],
             ])
         ;
     }
@@ -52,8 +56,7 @@ class RobotSettingsType extends AbstractType
             'data_class' => RobotSettings::class,
             'import_sitemaps' => true,
             'save_button_label' => 'Create',
-            'delete_button_hidden' => true,
-            'address_readonly' => false,
+            'domain_readonly' => false,
         ]);
     }
 }
