@@ -86,7 +86,8 @@ class ScheduleController extends AbstractController
         if ($form->isSubmitted() && $form->IsValid()) {
             $repository = $doctrine->getRepository(RobotSettings::class);
             $exists = $repository->domainExists($settings, $user->getId());
-            if ($exists) {
+            $same = $repository->isSameEntity($settings, $user->getId());
+            if (($exists && !$same)) {
                 $notifier->send(new Notification('Robot exists with that scheme and domain.', ['browser']));
             } else {
                 $entityManager = $doctrine->getManager();
