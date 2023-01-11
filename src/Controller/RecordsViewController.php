@@ -7,8 +7,11 @@ use App\Entity\RobotData;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\HeaderUtils;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Mime\MimeTypes;
 use Doctrine\Persistence\ManagerRegistry;
 
 class RecordsViewController extends AbstractController
@@ -33,14 +36,24 @@ class RecordsViewController extends AbstractController
             );
         }
 
-        $fileName = $record->getId();
-        $blob = $record->getDataStream();
+        // Determine our file extension.
+        $ext = "txt";
+        $mimeTypes = new MimeTypes();
+        $exts = $mimeTypes->getExtensions($record->getContentType());
+        if (count($exts) !== 0) {
+           $ext = $exts[0];
+        }
 
-        $response = new Response();
-        $response->headers->set('Content-Type', $record->getContentType());
-        $response->headers->set('Content-Length', strlen($blob));
-        $response->headers->set('Content-Disposition', 'attachment; filename="'. $fileName .'"');
-        $response->setContent($blob);
+        $fileName = $record->getId();
+
+        $response = new Response($record->getDataStream());
+
+        $disposition = HeaderUtils::makeDisposition(
+            HeaderUtils::DISPOSITION_ATTACHMENT,
+            $fileName . '.' . $ext,
+        );
+
+        $response->headers->set('Content-Disposition', $disposition);
 
         return $response;
     }
