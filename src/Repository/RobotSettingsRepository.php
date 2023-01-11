@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\RobotSettings;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\AbstractQuery;
 
 /**
  * @extends ServiceEntityRepository<RobotSettings>
@@ -38,6 +39,29 @@ class RobotSettingsRepository extends ServiceEntityRepository
             ->setParameter('id', $userId)
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+   public function userOwnsBot(int $userId, int $botId): bool
+    {
+        return (bool) $this->createQueryBuilder('c')
+            ->where('c.userId = :userId')
+            ->setParameter('userId', $userId)
+            ->andWhere('c.id = :botId')
+            ->setParameter('botId', $botId)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function findAllBotIdsByUserId($userId): array
+    {
+        $result = $this->createQueryBuilder('c')
+            ->select('c.id')
+            ->where('c.userId = :id')
+            ->setParameter('id', $userId)
+            ->groupBy('c.id')
+            ->getQuery()
+            ->getResult(AbstractQuery::HYDRATE_SCALAR_COLUMN);
+        return $result;
     }
 
     public function domainExists(RobotSettings $settings, int $userId): bool

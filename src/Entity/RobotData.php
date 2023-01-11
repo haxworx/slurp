@@ -228,4 +228,9 @@ class RobotData
 
         return $this;
     }
+
+    public function getDataStream()
+    {
+        return stream_get_contents($this->data);
+    }
 }

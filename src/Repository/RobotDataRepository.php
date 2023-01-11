@@ -3,8 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\RobotData;
+use App\Entity\RobotSettings;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * @extends ServiceEntityRepository<RobotData>
@@ -16,9 +18,29 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class RobotDataRepository extends ServiceEntityRepository
 {
+    public const PAGINATOR_PER_PAGE = 5;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, RobotData::class);
+        $this->doctrine = $registry;
+    }
+
+    public function getSearchPaginator(string $searchTerm, int $offset, int $userId): Paginator
+    {
+        $ids = $this->doctrine->getRepository(RobotSettings::class)->findAllBotIdsByUserId($userId);
+
+        $query = $this->createQueryBuilder('c')
+            ->where('c.data LIKE :searchTerm')
+            ->setParameter('searchTerm', '%' . $searchTerm . '%')
+            ->andWhere('c.botId IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->setMaxResults(self::PAGINATOR_PER_PAGE)
+            ->setFirstResult($offset)
+            ->getQuery()
+        ;
+
+        return new Paginator($query);
     }
 
     public function save(RobotData $entity, bool $flush = false): void
