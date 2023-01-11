@@ -6,9 +6,12 @@ import re
 import urllib.robotparser
 import hashlib
 import time
+import logging
+from datetime import datetime
 from urllib.parse import urljoin, urlparse
 from urllib import error
 
+import logs
 from config import Config
 from database import Database
 from pages import PageList
@@ -18,6 +21,9 @@ from hypertext import Http
 
 class Robot:
     def __init__(self, bot_id):
+        self.launch_id = None
+        self.is_running = False
+        self.has_error = False
         self.wanted_content = "text/html|text/plain|application/json|text/css|application/xml|text/xml"
         self.compile_regexes()
         self.bot_id = bot_id
@@ -27,6 +33,10 @@ class Robot:
         self.has_error = False
         self.url = self.address = "{}://{}" . format(self.config.scheme, self.config.domain_name)
         self.page_list = PageList()
+
+        logging.basicConfig(level=logging.INFO, stream=sys.stdout, format="%(message)s")
+        self.log = logging.getLogger(self.config.domain_name)
+        self.log.addHandler(logs.DatabaseHandler(self))
 
     def compile_regexes(self):
         try:
@@ -88,13 +98,66 @@ class Robot:
             metadata = metadata + name + ': ' + value + '\n'
         return metadata
 
+    def started(self):
+        everything_is_fine = True
+        self.is_running = True
+
+        SQL = """
+        INSERT INTO robot_launches (bot_id, start_time) VALUES (%s, %s)
+        """
+        cursor = self.dbh.cnx.cursor()
+        try:
+            cursor.execute(SQL, (self.bot_id, datetime.now()))
+            self.dbh.cnx.commit()
+        except mysql.connector.Error as e:
+            self.log.critical("Failed to save launches to database (%i):(%s)", e.errno, e.msg)
+            self.has_error = True
+            everything_is_fine = False
+
+        self.launch_id = cursor.lastrowid
+        cursor.close()
+        return everything_is_fine
+
+    def finished(self):
+        everything_is_fine = True
+        self.is_running = False
+        now = datetime.now()
+
+        SQL = """
+        UPDATE robot_settings SET end_time = %s, is_running = %s, has_error = %s WHERE id = %s
+        """
+        cursor = self.dbh.cnx.cursor()
+        try:
+            cursor.execute(SQL, (now, self.is_running, self.has_error, self.bot_id))
+            self.dbh.cnx.commit()
+        except mysql.connector.Error as e:
+            self.log.critical("Failed to store finished state to robot_settings (%i):(%s)", e.errno, e.msg)
+            everything_is_fine = False
+        cursor.close()
+
+        SQL = """
+        UPDATE robot_launches SET end_time = %s WHERE id = %s
+        """
+        cursor = self.dbh.cnx.cursor()
+        try:
+            cursor.execute(SQL, (now, self.launch_id))
+            self.dbh.cnx.commit()
+        except mysql.connector.Error as e:
+            self.log.critical("Failed to store finished state to robot_launches (%i):(%s)", e.errno, e.msg)
+            everything_is_fine = False
+        cursor.close()
+
+        return everything_is_fine
+
     def fetch_all(self):
+        self.started()
         self.get_robots_txt()
 
         if self.config.import_sitemaps:
             sm = SiteMaps(self)
             sm.parse()
 
+        self.log.info("starting")
         self.page_list.append(self.url)
 
         # Walk the page list, appending as we go.
@@ -117,14 +180,18 @@ class Robot:
                 downloader = Download(self.url, self.config.user_agent)
                 (response, code) = downloader.get()
             except error.HTTPError as e:
+                self.log.warning("failed to download %s (%i)", self.url, e.code)
                 break
             except error.URLError as e:
+                self.log.error("failed to connect %s (%s)", self.url, e.reason)
                 self.retry_count += 1
                 if self.retry_count > self.config.retry_max:
                     self.has_error = True
+                    self.log.critical("retry count limit reached (%i)", self.config.retry_max)
                     break
                 else:
                     self.page_list.again()
+                    self.log.warning("retrying %s", self.url)
                     continue
             except Exception as e:
                 pass
@@ -171,6 +238,7 @@ class Robot:
                         'length': length or len(data),
                         'data': data
                     }
+                self.log.info("saved %s", self.url)
 
                 count = 0
 
@@ -193,6 +261,8 @@ class Robot:
                 response.close()
                 time.sleep(self.config.scan_delay)
 
+        self.finished()
+
 def main(bot_id):
     robot = Robot(bot_id)
     robot.fetch_all()
@@ -201,5 +271,5 @@ if __name__ == '__main__':
     if len(sys.argv) != 2:
         print("Missing argument.", file=sys.stderr)
         sys.exit(1)
- 
+
     main(int(sys.argv[1]));
