@@ -5,16 +5,14 @@
 {% block body %}
 <form action="/search" method="GET">
 <div {{ stimulus_controller('search') }}>
-    <div class="container">
-        <div class="row height d-flex justify-content-center align-items-center">
-            <div class="col-md-8">
-                <div class="search">
-                    <input type="text" value="{{ search_term }}" name="search" class="form-control" placeholder="Search...">
-                    <button class="btn btn-primary">Search</button>
-                </div>
-            </div>
-        </div>
+<div class="input-group mb-3">
+    <input type="text" class="form-control" placeholder="Search" value="{{ search_term }}" name="search">
+    <div class="input-group-append">
+        <button type="button" class="btn btn-primary">Search
+            <i class="fas fa-search"></i>
+        </button>
     </div>
+</div>
 </form>
 </div>
 
