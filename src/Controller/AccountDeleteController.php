@@ -18,13 +18,21 @@ class AccountDeleteController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_USER');
 
         $user = $this->getUser();
-    
+
         $token = $request->request->get('token');
         if (!$this->isCsrfTokenValid('account-delete', $token)) {
             throw new \Exception('Invalid CSRF token.');
         }
 
         // Remove all user-associated data from hereon.
+
+        $botIds = $doctrine->getRepository(RobotSettings::class)->findAllBotIdsByUserId($userId);
+
+        foreach ($botIds as $botId) {
+            $doctrine->getRepository(RobotData::class)->deleteAllByBotId($botId);
+            $doctrine->getRepository(RobotLog::class)->deleteAllByBotId($botId);
+            $doctrine->getRepository(RobotLaunches::class)->deleteAllByBotId($botId);
+        }
 
         $doctrine->getRepository(RobotSettings::class)->deleteAllByUserId($user->getId());
 
