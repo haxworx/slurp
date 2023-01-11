@@ -1,0 +1,5 @@
+Logging failed at 2023-01-11 12:05:12.938156
+Error code: 1048
+SQLSTATE: 23000
+Message: Column 'launch_id' cannot be null
+

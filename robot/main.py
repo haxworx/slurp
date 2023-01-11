@@ -21,6 +21,7 @@ from hypertext import Http
 
 class Robot:
     def __init__(self, bot_id):
+        self.save_count = 0
         self.launch_id = None
         self.is_running = False
         self.has_error = False
@@ -116,6 +117,9 @@ class Robot:
 
         self.launch_id = cursor.lastrowid
         cursor.close()
+
+        self.log.info("starting")
+
         return everything_is_fine
 
     def finished(self):
@@ -147,6 +151,37 @@ class Robot:
             everything_is_fine = False
         cursor.close()
 
+        self.log.info("finished")
+
+        return everything_is_fine
+
+    def save_results(self, res):
+
+        everything_is_fine = True
+
+        SQL = """
+        INSERT INTO robot_data (bot_id, launch_id, time_stamp, link_source, modified,
+        status_code, content_type, headers, url, path, checksum, encoding, length, data)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """
+        val = (res['bot_id'], res['launch_id'], res['time_stamp'], res['link_source'],
+               res['modified'], res['status_code'], res['content_type'], res['headers'],
+               res['url'], res['path'], res['checksum'], res['encoding'], res['length'],
+               res['data'])
+
+        cursor = self.dbh.cnx.cursor()
+        try:
+            cursor.execute(SQL, val)
+            self.dbh.cnx.commit()
+        except mysql.connector.Error as e:
+            self.log.critical("failed to save record to database (%i): %s", e.errno, e.msg)
+            self.has_error = True
+            everything_is_fine = False
+
+        cursor.close()
+        if everything_is_fine:
+            self.save_count += 1
+
         return everything_is_fine
 
     def fetch_all(self):
@@ -157,7 +192,6 @@ class Robot:
             sm = SiteMaps(self)
             sm.parse()
 
-        self.log.info("starting")
         self.page_list.append(self.url)
 
         # Walk the page list, appending as we go.
@@ -167,8 +201,6 @@ class Robot:
             # Check our URL against robots text rules.
             if not self.rp.can_fetch(self.config.user_agent, self.url):
                 continue
-            print(self.url)
-
 
             parsed_url = urlparse(self.url)
             (scheme, path, query) = (parsed_url.scheme, parsed_url.path,
@@ -226,6 +258,9 @@ class Robot:
                     checksum = hashlib.md5(data)
 
                     res = {
+                        'bot_id': self.bot_id,
+                        'launch_id': self.launch_id,
+                        'time_stamp': datetime.now(),
                         'link_source': page.link_source,
                         'modified': modified,
                         'status_code': code,
@@ -238,6 +273,11 @@ class Robot:
                         'length': length or len(data),
                         'data': data
                     }
+                if not self.save_results(res):
+                    self.log.critical("could not save record to database table.")
+                    self.has_error = True
+                    break
+
                 self.log.info("saved %s", self.url)
 
                 count = 0
@@ -257,10 +297,11 @@ class Robot:
                                 if self.page_list.append(url, link_source=page.url):
                                     count += 1
                     if count:
-                        print("found {}" . format(count))
+                        self.log.info("found %i links on %s", count, self.url)
                 response.close()
                 time.sleep(self.config.scan_delay)
 
+        self.log.info("Saved total of %i records.", self.save_count)
         self.finished()
 
 def main(bot_id):

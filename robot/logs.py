@@ -39,7 +39,7 @@ class DatabaseHandler(StreamHandler):
             self.cnx.commit()
         except mysql.connector.Error as e:
             print("Logging failed: see {}" . format(self.ERROR_FILE))
-            with open(ERROR_FILE, "w+") as f:
+            with open(self.ERROR_FILE, "w+") as f:
                 f.write("Logging failed at {}\n"
                         "Error code: {}\n"
                         "SQLSTATE: {}\n"
