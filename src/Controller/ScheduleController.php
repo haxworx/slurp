@@ -6,6 +6,9 @@ namespace App\Controller;
 
 use App\Entity\RobotSettings;
 use App\Entity\GlobalSettings;
+use App\Entity\RobotData;
+use App\Entity\RobotLog;
+use App\Entity\RobotLaunches;
 use App\Form\RobotSettingsType;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -122,6 +125,12 @@ class ScheduleController extends AbstractController
                 'No robot for id: ' . $botId
             );
         }
+
+        // Remove database data.
+
+        $doctrine->getRepository(RobotData::class)->deleteAllByBotId($botId);
+        $doctrine->getRepository(RobotLog::class)->deleteAllByBotId($botId);
+        $doctrine->getRepository(RobotLaunches::class)->deleteAllByBotId($botId);
 
         $entityManager = $doctrine->getManager();
         $entityManager->remove($settings);

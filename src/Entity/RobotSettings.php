@@ -42,8 +42,8 @@ class RobotSettings
     #[ORM\Column(type: 'time', nullable: true)]
     private $startTime = null;
 
-    #[ORM\Column(type: 'time', nullable: true)]
-    private $endTime = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $endTime = null;
 
     #[CustomValidator\IsUserAgent]
     #[ORM\Column(length: 255)]
