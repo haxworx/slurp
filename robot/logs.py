@@ -18,6 +18,7 @@ class DatabaseHandler(StreamHandler):
     def emit(self, record):
         msg = self.format(record)
         bot_id = self.robot.bot_id
+        launch_id = self.robot.launch_id
         now = datetime.now()
         m = {
             'level': record.levelname,
@@ -27,17 +28,17 @@ class DatabaseHandler(StreamHandler):
         txt = json.dumps(m)
 
         SQL = """
-        INSERT INTO robot_log(bot_id, time_stamp, message)
-        VALUES (%s, %s, %s)
+        INSERT INTO robot_log(bot_id, launch_id, time_stamp, message)
+        VALUES (%s, %s, %s, %s)
         """
 
         cursor = self.cnx.cursor()
-        data = (bot_id, now, txt)
+        data = (bot_id, launch_id, now, txt)
         try:
             cursor.execute(SQL, data)
             self.cnx.commit()
         except mysql.connector.Error as e:
-            print("Logging failed: see {}" . format(self.ERRROR_FILE))
+            print("Logging failed: see {}" . format(self.ERROR_FILE))
             with open(ERROR_FILE, "w+") as f:
                 f.write("Logging failed at {}\n"
                         "Error code: {}\n"
