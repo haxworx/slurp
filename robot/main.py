@@ -29,6 +29,7 @@ class Robot:
         self.compile_regexes()
         self.bot_id = bot_id
         self.config = Config(self.bot_id);
+        self.config.read_all()
         self.dbh = Database(self.config)
         self.retry_count = 0
         self.has_error = False
@@ -55,9 +56,15 @@ class Robot:
         self.sitemaps = []
         url = self.address + '/robots.txt';
         self.page_list.append(url)
-        rp = urllib.robotparser.RobotFileParser()
-        rp.set_url(url)
-        rp.read()
+        try:
+            rp = urllib.robotparser.RobotFileParser()
+            rp.set_url(url)
+            rp.read()
+        except urllib.error.URLError as e:
+            self.log.warning("unable to read robots.txt: %s", e.reason)
+            self.rp = None
+            return
+
         self.rp = rp
         if rp.site_maps() is not None:
             for address in rp.site_maps():
@@ -199,7 +206,7 @@ class Robot:
             self.url = page.url
 
             # Check our URL against robots text rules.
-            if not self.rp.can_fetch(self.config.user_agent, self.url):
+            if self.rp is not None and not self.rp.can_fetch(self.config.user_agent, self.url):
                 continue
 
             parsed_url = urlparse(self.url)
@@ -307,8 +314,14 @@ class Robot:
 def main(bot_id):
     robot = Robot(bot_id)
     robot.fetch_all()
+    sys.exit(0)
 
 if __name__ == '__main__':
+    ROBOT_START = os.getenv('ROBOT_START')
+    if ROBOT_START is None:
+        print("This program should not be launched directly.", file=sys.stderr)
+        sys.exit(1)
+
     if len(sys.argv) != 2:
         print("Missing argument.", file=sys.stderr)
         sys.exit(1)

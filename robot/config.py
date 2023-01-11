@@ -14,6 +14,8 @@ class Config:
 
     def __init__(self, bot_id):
         self.bot_id = bot_id
+
+    def read_all(self):
         self.read_ini()
         self.read_settings()
 

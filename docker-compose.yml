@@ -28,5 +28,11 @@ services:
     ports:
       - "8080:80"
 
+  launcher:
+    container_name: slurp-launcher
+    build:
+      context: ./docker/launcher
+    depends_on:
+      - database
 volumes:
   db-data:
