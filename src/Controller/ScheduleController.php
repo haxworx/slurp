@@ -15,6 +15,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Notifier\Notification\Notification;
 use Symfony\Component\Notifier\NotifierInterface;
@@ -116,7 +117,7 @@ class ScheduleController extends AbstractController
         $token = $jsonContent->token;
 
         if (!$this->isCsrfTokenValid('robot-delete', $token)) {
-            throw new \Exception('Invalid CSRF token');
+            throw new AccessDeniedException('Invalid CSRF token');
         }
 
         $settings = $doctrine->getRepository(RobotSettings::class)->findOneByUserIdAndBotId($user->getId(), $botId);
