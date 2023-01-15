@@ -39,6 +39,17 @@ class RobotLogRepository extends ServiceEntityRepository
         }
     }
 
+    public function findAllNew($launchId, $lastId)
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.launchId = :launchId')
+            ->setParameter('launchId', $launchId)
+            ->andWhere('c.id > :lastId')
+            ->setParameter('lastId', $lastId)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function deleteAllByBotId(int $botId): void
     {
         $this->createQueryBuilder('c')

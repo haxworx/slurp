@@ -39,6 +39,15 @@ class RobotLaunchesRepository extends ServiceEntityRepository
         }
     }
 
+    public function findAllByBotId($botId)
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.botId = :botId')
+            ->setParameter('botId', $botId)
+            ->getQuery()
+            ->getResult();
+    }            
+
     public function deleteAllByBotId(int $botId): void
     {
         $this->createQueryBuilder('c')

@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% endblock %}
+{% block body %}
+<div {{ stimulus_controller('log', { token: csrf_token('log') }) }}>
+<hr>
+<div class="form-group py-2">
+    <select data-log-target="botId" class="form-control">
+        <option value="" selected disabled>Select a robot</option>
+    </select>
+</div>
+<div class="form-group py-2">
+    <select data-log-target="launchId" class="form-control visually-hidden">
+        <option value="" selected disabled>Select a launch</option>
+    </select>
+</div>
+
+<div class="py-2">
+    <pre class="overflow-auto bg-light border p-3 rounded-3 text-secondary visually-hidden" data-log-target="text">
+    </pre>
+</div>
+
+<div data-log-target="spinner" class="visually-hidden spinner-border text-primary float-end" role="status"></div>
+
+</div>
+{% endblock %}

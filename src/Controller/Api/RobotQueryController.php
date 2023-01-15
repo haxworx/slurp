@@ -3,6 +3,7 @@
 namespace App\Controller\Api;
 
 use App\Entity\RobotSettings;
+use App\Entity\RobotLaunches;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -37,6 +38,28 @@ class RobotQueryController extends AbstractController
         $response = new JsonResponse();
         $response->setContent($jsonContent);
 
-        return $response; 
+        return $response;
+    }
+
+    #[Route('/api/robot/launches/{botId}', name: 'app_api_robot_launches')]
+    public function getLauchesByBotId(Request $request, ManagerRegistry $doctrine, int $botId): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
+        $user = $this->getUser();
+
+        if (!$doctrine->getRepository(RobotSettings::class)->userOwnsBot($user->getId(), $botId)) {
+            throw new \Exception(
+                'Bot not owned by user.'
+            );
+        }
+
+        $launches = $doctrine->getRepository(RobotLaunches::class)->findAllByBotId($botId);
+        $jsonContent = $this->serializer->serialize($launches, 'json');
+
+        $response = new JsonResponse();
+        $response->setContent($jsonContent);
+
+        return $response;
     }
 }
