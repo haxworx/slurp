@@ -52,6 +52,8 @@ def main():
                 print("Retry...{}" . format(retry_count), file=sys.stderr)
                 continue
 
+    print("Entering main loop")
+
     jobs = dict();
     jobs['ids'] = []
     jobs['current_time'] = "";
