@@ -1,6 +1,14 @@
 import { Controller } from '@hotwired/stimulus';
 import { Notification } from './notification.js';
 
+function timeFormat(input) {
+    let out = "n/a";
+    if (input === null) return out;
+
+    let date = new Date(input);
+    return date.toUTCString();
+}
+
 export default class extends Controller {
     static targets = [ 'botId', 'launchId', 'text', 'spinner' ];
     static values = {
@@ -22,11 +30,13 @@ export default class extends Controller {
 
         this.botIdTarget.addEventListener('change', (event) => {
             if (!event.target.value) return;
+
             this.clearSelectElements(this.launchIdTarget);
             this.launchIdTarget.classList.remove('visually-hidden');
             this.spinnerTarget.classList.add('visually-hidden');
             this.textTarget.classList.add('visually-hidden');
             this.textTarget.innerHTML = "";
+
             this.botIdValue = event.target.value;
             fetch('/api/robot/launches/' + this.botIdValue, {
                 method: 'GET',
@@ -38,7 +48,7 @@ export default class extends Controller {
             .then(launches => {
                 for (let launch of launches) {
                     let option = document.createElement('option')
-                    option.text = launch.startTime;
+                    option.text = timeFormat(launch.startTime);
                     option.value = launch.id;
                     this.launchIdTarget.appendChild(option);
                 }
@@ -58,7 +68,7 @@ export default class extends Controller {
         .then(robots => {
             for (let robot of robots) {
                 let option = document.createElement('option')
-                option.text = robot.domainName;
+                option.text = `(${robot.scheme}) ${robot.domainName}`;
                 option.value = robot.id;
                 this.botIdTarget.appendChild(option);
             }
