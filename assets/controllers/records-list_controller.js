@@ -1,7 +1,6 @@
 import { Controller } from '@hotwired/stimulus';
 import { Notification } from './notification.js';
 
-
 function timeFormat(input) {
     let out = "n/a";
     if (input === null) return out;
@@ -18,7 +17,6 @@ export default class extends Controller {
     };
 
     connect() {
-        console.log("here");
         this.launchIdTarget.addEventListener('change', (event) => {
             if (!event.target.value) return;
                 this.launchIdValue = event.target.value;
@@ -52,7 +50,6 @@ export default class extends Controller {
                 notification.show();
             });
         });
-        console.log("here");
 
         fetch('/api/robot/query/all', {
             method: 'GET',
