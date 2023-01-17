@@ -1,7 +1,8 @@
 import { Controller } from '@hotwired/stimulus';
+import { Modal } from 'bootstrap';
 
 export default class extends Controller {
-    static targets = ['pre'];
+    static targets = ['pre', 'modal'];
     static values = {
         botId: Number,
     }
@@ -19,6 +20,8 @@ export default class extends Controller {
         })
         .then(response => response.text())
         .then(data => {
+            let modal = new Modal(this.modalTarget);
+            modal.show();
             pre.textContent = data;
         })
         .catch((error) => {
