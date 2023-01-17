@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\RobotSettings;
 use App\Entity\RobotData;
+use App\Entity\RobotLaunches;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -56,5 +57,53 @@ class RecordsViewController extends AbstractController
         $response->headers->set('Content-Disposition', $disposition);
 
         return $response;
+    }
+
+    #[Route('/records', name: 'app_records')]
+    public function index(Request $request): Response
+    {
+        return $this->render('records_list/index.html.twig');
+    }
+
+    #[Route('/records/list/{botId}/launch/{launchId}/offset/{offset}', name: 'app_records_list')]
+    public function recordsList(Request $request, ManagerRegistry $doctrine, int $botId, int $launchId, int $offset): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
+        $userId = $this->getUser()->getId();
+
+        if (!$doctrine->getRepository(RobotSettings::class)->userOwnsBot($userId, $botId)) {
+            throw new AccessDeniedException(
+                'User does not own bot.'
+            );
+        }
+
+        $settings = $doctrine->getRepository(RobotSettings::class)->findOneByUserIdAndBotId($userId, $botId);
+        if (!$settings) {
+            throw $this->createNotFoundException(
+                'No robot for id: ' . $botId
+            );
+        }
+    
+        $launch = $doctrine->getRepository(RobotLaunches::class)->findOneByLaunchId($launchId);
+        if (!$launch) {
+            throw $this->createNotFoundException(
+                'No launch for id: ' . $launchId
+            );
+        }
+
+        $repository = $doctrine->getRepository(RobotData::class);
+
+        $paginator = $doctrine->getRepository(RobotData::class)->getPaginator($launchId, $offset);
+        $n = count($paginator);
+
+        return $this->render('records_list/view.html.twig', [
+            'records' => $paginator,
+            'next' => min($n, $offset + $repository::PAGINATOR_PER_PAGE),
+            'prev' => $offset - $repository::PAGINATOR_PER_PAGE,
+            'count' => $n,
+            'bot_id' => $botId,
+            'launch_id' => $launchId,
+        ]);
     }
 }

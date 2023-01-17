@@ -29,7 +29,7 @@
                     <div class="collapse navbar-collapse" id="header-menu">
                         <ul class="nav navbar-nav mr-auto">
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ path('app_dashboard') }}">
+                                <a class="nav-link" title="Home" href="{{ path('app_dashboard') }}">
                                     Home
                                 </a>
                             </li>
@@ -37,17 +37,22 @@
 {% if is_granted('ROLE_USER') %}
                         <ul class="nav navbar-nav mr-auto">
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ path('app_schedule') }}">
+                                <a class="nav-link" title="Schedule Robot" href="{{ path('app_schedule') }}">
                                     Schedule
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ path('app_search') }}">
+                                <a class="nav-link" title="Search Records" href="{{ path('app_search') }}">
                                     Search
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ path('app_log')}}">
+                                <a class="nav-link" title="Browse Records" href="{{ path('app_records') }}">
+                                    Records
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" title="View Logs" href="{{ path('app_log')}}">
                                     Logs
                                 </a>
                         </ul>

@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Search{% endblock %}
+
+{% block body %}
+<p class="py-4">Found a total of {{ count }} results.</p>
+<div {{ stimulus_controller('records_view') }}>
+<div class="container py-4">
+<table width="100%" class="table table-striped">
+    <thead>
+        <tr class="align-middle"><th>bot id</th><th>id</th><th>path</th><th>timestamp</th><th>content type</th><th>content length</th><th>headers</th><th></th><th></th></tr>
+    </thead>
+    <tbody>
+{% for record in records %}
+        <tr class="align-middle">
+            <td>{{ record.botId}}</td>
+            <td>{{ record.id }}</td>
+            <td>{{ record.path }}</td>
+            <td>{{ record.timeStamp|date('Y-m-d H:i:s') }}</td>
+            <td>{{ record.contentType }}</td>
+            <td>{{ record.length }}</td>
+            <td>{{ record.headers|ellipsis }}</td>
+            <td>
+                <button class="btn btn-primary btn-sm" data-records-view-bot-id-param="{{ record.botId }}" data-records-view-id-param="{{ record.id }}" data-action="records-view#show">View</button>
+            </td>
+            <td>
+                <button class="btn btn-secondary btn-sm" data-records-view-bot-id-param="{{ record.botId }}" data-records-view-id-param="{{ record.id }}" data-action="records-view#download">Download</button>
+            </td>
+        </tr>
+{% endfor %}
+    </tbody>
+</table>
+
+<ul class="pagination">
+{% if prev >= 0 %}
+    <li class="page-item"><a class="page-link" href="{{ path('app_records_list', { botId: bot_id, launchId: launch_id, offset: prev }) }}">Previous</a></li>
+{% endif %}
+{% if next < records|length %}
+    <li class="page-item"><a class="page-link" href="{{ path('app_records_list', { botId: bot_id, launchId: launch_id, offset: next }) }}">Next</a></li>
+{% endif %}
+</ul>
+</div>
+<pre data-records-view-target="pre" class="record-view">
+</pre>
+</div>
+
+{% endblock %}

@@ -21,6 +21,15 @@ class RobotLaunchesRepository extends ServiceEntityRepository
         parent::__construct($registry, RobotLaunches::class);
     }
 
+    public function findOneByLaunchId($launchId)
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.id = :launchId')
+            ->setParameter('launchId', $launchId)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     public function save(RobotLaunches $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);

@@ -43,6 +43,19 @@ class RobotDataRepository extends ServiceEntityRepository
         return new Paginator($query);
     }
 
+    public function getPaginator(int $launchId, int $offset): Paginator
+    {
+        $query = $this->createQueryBuilder('c')
+            ->Where('c.launchId = :launchId')
+            ->setParameter('launchId', $launchId)
+            ->setMaxResults(self::PAGINATOR_PER_PAGE)
+            ->setFirstResult($offset)
+            ->getQuery()
+        ;
+
+        return new Paginator($query);
+    }
+
     public function save(RobotData $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
