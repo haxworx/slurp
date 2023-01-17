@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello LoginController!{% endblock %}
+{% block title %}Welcome!{% endblock %}
 
 {% block body %}
     <div {{ stimulus_controller('login') }}>
@@ -15,7 +15,7 @@
         <input type="password" id="password" name="_password" class="form-control">
 	    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
         <br>
-        <button type="submit" class="btn btn-primary">login</button>
+        <button type="submit" class="btn btn-primary">Sign in</button>
     </form>
     <br>
     <p>Not registered? Register <a href="{{ path('app_register') }}">here</a>.</p>
