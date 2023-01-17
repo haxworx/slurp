@@ -1,5 +1,7 @@
 <?php
 
+// src/Controller/RecordsViewController.php
+
 namespace App\Controller;
 
 use App\Entity\RobotSettings;

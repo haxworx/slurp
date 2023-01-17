@@ -1,5 +1,7 @@
 <?php
 
+// src/Controller/Api/RobotQueryController.php
+
 namespace App\Controller\Api;
 
 use App\Entity\RobotSettings;

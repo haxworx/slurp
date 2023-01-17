@@ -1,5 +1,7 @@
 <?php
 
+// src/Controller/DashboardController.php
+
 namespace App\Controller;
 
 use App\Entity\RobotSettings;

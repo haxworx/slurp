@@ -1,5 +1,7 @@
 <?php
 
+// src/Controller/LoginController.php
+
 namespace App\Controller;
 
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
