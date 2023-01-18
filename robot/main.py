@@ -207,6 +207,7 @@ class Robot:
 
             # Check our URL against robots text rules.
             if self.rp is not None and not self.rp.can_fetch(self.config.user_agent, self.url):
+                self.log.warning("ignoring %s due to robots txt rule", self.url)
                 continue
 
             parsed_url = urlparse(self.url)
