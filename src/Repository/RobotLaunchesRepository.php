@@ -53,6 +53,7 @@ class RobotLaunchesRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('c')
             ->where('c.botId = :botId')
             ->setParameter('botId', $botId)
+            ->orderBy('c.id', 'DESC')
             ->getQuery()
             ->getResult();
     }            
