@@ -36,4 +36,12 @@ export default class extends Controller {
         const botId = this.botIdValue || event.params['botId'];
         window.location.href = '/records/download/' + botId + '/record/' + recordId;
     }
+
+    viewHeaders(event) {
+        let headers = event.params['headers'];
+        console.log(headers);
+        let modal = new Modal(this.modalTarget);
+        modal.show();
+        this.preTarget.textContent = headers;
+    }
 }
