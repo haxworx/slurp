@@ -11,8 +11,10 @@
     <table class="table table-striped">
         <thead>
             <th>id</th>
+            <th>scheme</th>
             <th>address</th>
             <th>agent</th>
+            <th>errors</th>
             <th>start</th>
             <th>finish</th>
             <th class="text-center">actions</th>
@@ -21,8 +23,10 @@
             {% for bot in settings %}
                 <tr> 
                     <td>{{ bot.id }}</td>
+                    <td>{{ bot.scheme }}</td>
                     <td>{{ bot.domainName|ellipsis }}</td>
                     <td>{{ bot.userAgent|ellipsis }}</td>
+                    <td>{{ bot.hasError | has_error }}</td>
                     <td>{{ bot.startTime | date('H:i') }}</td>
                     <td>{{ bot.endTime | fuzzy_date }}</td>
                     <td class="text-center">

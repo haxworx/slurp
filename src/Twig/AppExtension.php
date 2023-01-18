@@ -15,6 +15,7 @@ class AppExtension extends AbstractExtension
         return [
             new TwigFilter('ellipsis', [$this, 'ellipsis']),
             new TwigFilter('fuzzy_date', [$this, 'fuzzyDate']),
+            new TwigFilter('has_error', [$this, 'hasError']),
         ];
     }
 
@@ -30,5 +31,10 @@ class AppExtension extends AbstractExtension
     public function fuzzyDate(?\DateTime $dateTime): string
     {
         return FuzzyDateTime::get($dateTime);
+    }
+
+    public function hasError(?bool $hasError): string
+    {
+        return $hasError ? "true" : "false";
     }
 }
