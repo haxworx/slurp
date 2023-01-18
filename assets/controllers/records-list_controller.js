@@ -28,6 +28,7 @@ export default class extends Controller {
         this.botIdTarget.addEventListener('change', (event) => {
             if (!event.target.value) return;
             this.botIdValue = event.target.value;
+            this.clearSelectElements(this.launchIdTarget);
             this.launchIdTarget.classList.remove('visually-hidden');
 
             fetch('/api/robot/launches/' + this.botIdValue, {
@@ -70,5 +71,15 @@ export default class extends Controller {
             let notification = new Notification('An error occurred: ' + error, true);
             notification.show();
         });
+    }
+
+    clearSelectElements(selectElement) {
+        let length = selectElement.options.length;
+        for (let i = length -1; i >= 1; i--) {
+            if (selectElement.options[i].value != "") {
+                selectElement.remove(i);
+            }
+        }
+        selectElement.value = "";
     }
 }
