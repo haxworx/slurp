@@ -39,7 +39,6 @@ export default class extends Controller {
 
     viewHeaders(event) {
         let headers = event.params['headers'];
-        console.log(headers);
         let modal = new Modal(this.modalTarget);
         modal.show();
         this.preTarget.textContent = headers;
