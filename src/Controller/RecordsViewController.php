@@ -94,8 +94,10 @@ class RecordsViewController extends AbstractController
             );
         }
 
-        $repository = $doctrine->getRepository(RobotData::class);
+        $duration = $launch->getStartTime()->format('Y-m-d H:i:s') . ' to ' .
+                    $launch->getEndTime()->format('Y-m-d H:i:s');
 
+        $repository = $doctrine->getRepository(RobotData::class);
         $paginator = $doctrine->getRepository(RobotData::class)->getPaginator($launchId, $offset);
         $n = count($paginator);
 
@@ -106,6 +108,8 @@ class RecordsViewController extends AbstractController
             'count' => $n,
             'bot_id' => $botId,
             'launch_id' => $launchId,
+            'address' => $settings->getScheme() . "://" . $settings->getDomainName(),
+            'duration' => $duration,
         ]);
     }
 }

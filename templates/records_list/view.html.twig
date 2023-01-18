@@ -3,10 +3,11 @@
 {% block title %}Search{% endblock %}
 
 {% block body %}
+<h5>{{ address }}</h5>
+<p class="py-4">{{ duration }}</p>
 <p class="py-4">Found a total of {{ count }} results.</p>
 <div {{ stimulus_controller('records_view') }}>
 <div class="container py-4">
-
 {{ include('records_list/table.html.twig') }}
 
 <ul class="pagination">
