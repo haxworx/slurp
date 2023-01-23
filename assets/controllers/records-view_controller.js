@@ -2,7 +2,7 @@ import { Controller } from '@hotwired/stimulus';
 import { Modal } from 'bootstrap';
 
 export default class extends Controller {
-    static targets = ['pre', 'modal'];
+    static targets = ['pre', 'modal', 'frame'];
     static values = {
         botId: Number,
     }
@@ -10,11 +10,17 @@ export default class extends Controller {
     connect() {
     }
 
-    show(event) {
+    reset() {
+        this.preTarget.innerHTML = "";
+        this.frameTarget.src="";
+    }
+
+    raw(event) {
         const pre = this.preTarget;
         const recordId = event.params['id'];
         const botId = this.botIdValue || event.params['botId'];
 
+        this.reset();
         fetch('/records/download/' + botId + '/record/' + recordId, {
             method: 'GET',
         })
@@ -31,6 +37,17 @@ export default class extends Controller {
         });
     }
 
+    view(event) {
+        const frame = this.frameTarget;
+        const recordId = event.params['id'];
+        const botId = this.botIdValue || event.params['botId'];
+
+        this.reset();
+        let modal = new Modal(this.modalTarget);
+        modal.show();
+        frame.src = '/records/view/' + botId + '/record/' + recordId;
+    }
+
     download (event) {
         const recordId = event.params.id;
         const botId = this.botIdValue || event.params['botId'];
@@ -38,6 +55,7 @@ export default class extends Controller {
     }
 
     viewHeaders(event) {
+        this.reset();
         let headers = event.params['headers'];
         let modal = new Modal(this.modalTarget);
         modal.show();

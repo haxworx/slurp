@@ -5,6 +5,13 @@ body {
     font-family: "IBM Plex Sans", "Open Sans", sans-serif;
 }
 
+iframe {
+    display: block;
+    border: none;
+    height: calc(100vh - 30px);
+    width: 100%;
+}
+
 .table-striped {
     vertical-align: middle;
 }

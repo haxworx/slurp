@@ -61,6 +61,31 @@ class RecordsViewController extends AbstractController
         return $response;
     }
 
+    #[Route('/records/view/{botId}/record/{recordId}', name: 'app_records_view')]
+    public function view(Request $request, ManagerRegistry $doctrine, int $botId, int $recordId): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
+        $user = $this->getUser();
+
+        if (!$doctrine->getRepository(RobotSettings::class)->userOwnsBot($user->getId(), $botId)) {
+            throw new AccessDeniedException(
+                'User does not own bot.'
+            );
+        }
+
+        $record = $doctrine->getRepository(RobotData::class)->findOneById($recordId);
+        if (!$record) {
+            throw $this->createNotFoundException(
+                'No record found.'
+            );
+        }
+
+        $response = new Response($record->getDataStream());
+
+        return $response;
+    }
+
     #[Route('/records', name: 'app_records')]
     public function index(Request $request): Response
     {
