@@ -296,6 +296,9 @@ class Robot:
                         'length': length or len(data),
                         'data': data
                     }
+                else:
+                    continue
+
                 if not self.save_results(res):
                     self.log.critical("could not save record to database table.")
                     self.has_error = True
