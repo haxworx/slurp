@@ -311,8 +311,7 @@ class Robot:
 
                 count = 0
 
-                # Extract URLs and append to our page list if the current page is not a sitemap source or
-                # config.import_sitemaps is not set.
+                # Extract URLs and append to our page list
                 try:
                     content = data.decode(encoding)
                 except UnicodeDecodeError as e:
