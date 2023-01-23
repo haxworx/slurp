@@ -56,6 +56,19 @@ class RobotDataRepository extends ServiceEntityRepository
         return new Paginator($query);
     }
 
+    public function findRecordIdByLaunchIdAndPath(int $launchId, string $path): ?int
+    {
+        $record = $this->createQueryBuilder('c')
+            ->where('c.launchId = :launchId')
+            ->setParameter('launchId', $launchId)
+            ->andWhere('c.path = :path')
+            ->setParameter('path', $path)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        return $record?->getId();
+    }
+
     public function save(RobotData $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);

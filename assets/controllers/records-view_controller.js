@@ -41,11 +41,13 @@ export default class extends Controller {
         const frame = this.frameTarget;
         const recordId = event.params['id'];
         const botId = this.botIdValue || event.params['botId'];
+        const launchId = event.params['launchId'];
+        console.log(launchId);
 
         this.reset();
         let modal = new Modal(this.modalTarget);
         modal.show();
-        frame.src = '/records/view/' + botId + '/record/' + recordId;
+        frame.src = '/records/view/' + botId + '/launch/' + launchId + '/record/' + recordId;
     }
 
     download (event) {

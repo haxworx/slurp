@@ -19,12 +19,18 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class RecordsViewController extends AbstractController
 {
+    public function __construct(ManagerRegistry $doctrine)
+    {
+        $this->doctrine = $doctrine;
+    }
+
     #[Route('/records/download/{botId}/record/{recordId}', name: 'app_records_download')]
-    public function download(Request $request, ManagerRegistry $doctrine, int $botId, int $recordId): Response
+    public function download(Request $request, int $botId, int $recordId): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
         $user = $this->getUser();
+        $doctrine = $this->doctrine;
 
         if (!$doctrine->getRepository(RobotSettings::class)->userOwnsBot($user->getId(), $botId)) {
             throw new AccessDeniedException(
@@ -61,12 +67,40 @@ class RecordsViewController extends AbstractController
         return $response;
     }
 
-    #[Route('/records/view/{botId}/record/{recordId}', name: 'app_records_view')]
-    public function view(Request $request, ManagerRegistry $doctrine, int $botId, int $recordId): Response
+    private function replaceTags(\DOMDocument $dom, string $tag, int $botId, int $recordId, int $launchId): void
+    {
+        $regex = '/^(\/.*?)$/';
+
+        $links = $dom->getElementsByTagName($tag);
+        foreach ($links as $link) {
+            if (preg_match($regex, $link->getAttribute('href'), $matches)) {
+                $recordId = $this->doctrine->getRepository(RobotData::class)->findRecordIdByLaunchIdAndPath($launchId, $matches[1]);
+                if ($recordId) {
+                    $link->setAttribute('href', sprintf('/records/view/%d/launch/%d/record/%d', $botId, $launchId, $recordId));
+                }
+            }
+        }
+    }
+
+    private function replaceLinks(string $data, int $botId, int $recordId, int $launchId): string
+    {
+
+        $dom = new \DomDocument;
+        @$dom->loadHTML($data);
+
+        $this->replaceTags($dom, "link", $botId, $recordId, $launchId);
+        $this->replaceTags($dom, "a", $botId, $recordId, $launchId);
+
+        return $dom->saveHTML();
+    }
+
+    #[Route('/records/view/{botId}/launch/{launchId}/record/{recordId}', name: 'app_records_view')]
+    public function view(Request $request, int $botId, int $recordId, int $launchId): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
         $user = $this->getUser();
+        $doctrine = $this->doctrine;
 
         if (!$doctrine->getRepository(RobotSettings::class)->userOwnsBot($user->getId(), $botId)) {
             throw new AccessDeniedException(
@@ -81,7 +115,17 @@ class RecordsViewController extends AbstractController
             );
         }
 
-        $response = new Response($record->getDataStream());
+        $data = $record->getDataStream();
+
+        // Attempt to generate locally traversible and visually identical view
+        // of the web page. Replace links and CSS with copies stored locally
+        // if possible.
+        if ($record->getContentType() === "text/html") {
+            $data = $this->replaceLinks($data, $botId, $recordId, $launchId);
+        }
+
+        $response = new Response($data);
+        $response->headers->set('Content-Type', $record->getContentType());
 
         return $response;
     }
@@ -95,11 +139,12 @@ class RecordsViewController extends AbstractController
     }
 
     #[Route('/records/list/{botId}/launch/{launchId}/offset/{offset}', name: 'app_records_list')]
-    public function recordsList(Request $request, ManagerRegistry $doctrine, int $botId, int $launchId, int $offset): Response
+    public function recordsList(Request $request, int $botId, int $launchId, int $offset): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
         $userId = $this->getUser()->getId();
+        $doctrine = $this->doctrine;
 
         if (!$doctrine->getRepository(RobotSettings::class)->userOwnsBot($userId, $botId)) {
             throw new AccessDeniedException(
