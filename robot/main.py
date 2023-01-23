@@ -49,6 +49,8 @@ class Robot:
                                       re.IGNORECASE)
             self.hrefs = re.compile("href=[\"\'](.*?)[\"\']",
                                     re.IGNORECASE)
+            self.imgs = re.compile("src=[\"\'](.*?)[\"\']",
+                                   re.IGNORECASE)
         except re.error as e:
             print("Regex compilation failed: {}" . format(e), file=sys.stderr)
             sys.exit(1)
@@ -316,6 +318,7 @@ class Robot:
                 except UnicodeDecodeError as e:
                     content = data.decode('iso-8859-1')
                 links = self.hrefs.findall(content)
+                links.append(self.imgs.findall(content))
                 for link in links:
                     if self.valid_link(link):
                         url = urljoin(self.url, link)
