@@ -63,6 +63,7 @@ class RobotDataRepository extends ServiceEntityRepository
             ->setParameter('launchId', $launchId)
             ->andWhere('c.path = :path')
             ->setParameter('path', $path)
+            ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
 

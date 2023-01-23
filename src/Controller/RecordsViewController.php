@@ -67,29 +67,27 @@ class RecordsViewController extends AbstractController
         return $response;
     }
 
-    private function replaceTags(\DOMDocument $dom, string $tag, int $botId, int $recordId, int $launchId): void
+    private function replaceTag(\DOMDocument $dom, string $tag, string $attr, int $botId, int $recordId, int $launchId): void
     {
-        $regex = '/^(\/.*?)$/';
-
         $links = $dom->getElementsByTagName($tag);
         foreach ($links as $link) {
-            if (preg_match($regex, $link->getAttribute('href'), $matches)) {
-                $recordId = $this->doctrine->getRepository(RobotData::class)->findRecordIdByLaunchIdAndPath($launchId, $matches[1]);
-                if ($recordId) {
-                    $link->setAttribute('href', sprintf('/records/view/%d/launch/%d/record/%d', $botId, $launchId, $recordId));
-                }
+            $value = $link->getAttribute($attr);
+            $recordId = $this->doctrine->getRepository(RobotData::class)->findRecordIdByLaunchIdAndPath($launchId, $value);
+            if ($recordId) {
+                $link->setAttribute($attr, sprintf('/records/view/%d/launch/%d/record/%d', $botId, $launchId, $recordId));
             }
         }
     }
 
-    private function replaceLinks(string $data, int $botId, int $recordId, int $launchId): string
+    private function replaceTags(string $data, int $botId, int $recordId, int $launchId): string
     {
 
         $dom = new \DomDocument;
         @$dom->loadHTML($data);
 
-        $this->replaceTags($dom, "link", $botId, $recordId, $launchId);
-        $this->replaceTags($dom, "a", $botId, $recordId, $launchId);
+        $this->replaceTag($dom, "link", "href", $botId, $recordId, $launchId);
+        $this->replaceTag($dom, "a", "href", $botId, $recordId, $launchId);
+        $this->replaceTag($dom, "img", "src", $botId, $recordId, $launchId);
 
         return $dom->saveHTML();
     }
@@ -121,7 +119,7 @@ class RecordsViewController extends AbstractController
         // of the web page. Replace links and CSS with copies stored locally
         // if possible.
         if ($record->getContentType() === "text/html") {
-            $data = $this->replaceLinks($data, $botId, $recordId, $launchId);
+            $data = $this->replaceTags($data, $botId, $recordId, $launchId);
         }
 
         $response = new Response($data);
