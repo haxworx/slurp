@@ -97,9 +97,6 @@ class Robot:
         if len(link) == 0:
             return False
 
-        if link[0] != '/':
-            return False
-
         return self.rp.can_fetch(self.config.user_agent, self.config.domain_name + link)
 
     def metadata_extract(self, headers):
@@ -232,14 +229,14 @@ class Robot:
             (scheme, path, query) = (parsed_url.scheme, parsed_url.path,
                                      parsed_url.query)
             # Ignore any URL with a query string.
-            if len(query):
-                continue
+            # if len(query):
+            #    continue
             try:
                 downloader = Download(self.url, self.config.user_agent)
                 (response, code) = downloader.get()
             except error.HTTPError as e:
                 self.log.warning("failed to download %s (%i)", self.url, e.code)
-                break
+                continue
             except error.URLError as e:
                 self.log.error("failed to connect %s (%s)", self.url, e.reason)
                 self.retry_count += 1
@@ -318,12 +315,14 @@ class Robot:
                 except UnicodeDecodeError as e:
                     content = data.decode('iso-8859-1')
                 links = self.hrefs.findall(content)
-                links.append(self.imgs.findall(content))
+                links += self.imgs.findall(content)
                 for link in links:
                     if self.valid_link(link):
-                        url = urljoin(self.url, link)
+                        url = urljoin(self.address, link)
                         domain = self.domain_parse(url)
                         scheme = self.scheme_parse(url)
+                        if domain is None or scheme is None:
+                            continue
                         if (domain.upper() == self.config.domain_name.upper()) and (scheme.upper() == self.config.scheme.upper()):
                             if self.page_list.append(url, link_source=page.url):
                                 count += 1
