@@ -89,6 +89,8 @@ class RecordsViewController extends AbstractController
     #[Route('/records', name: 'app_records')]
     public function index(Request $request): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
         return $this->render('records_list/index.html.twig');
     }
 
