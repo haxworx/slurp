@@ -26,7 +26,7 @@ class Robot:
         self.is_running = False
         self.has_error = False
         self.wanted_content = "text/html|text/plain|application/json|text/css|application/xml|text/xml"
-        self.wanted_content .= "|image/png|image/jpeg|image/gif|image/svg+xml|image/webp";
+        self.wanted_content += "|image/png|image/jpeg|image/gif|image/svg+xml|image/webp";
         self.compile_regexes()
         self.bot_id = bot_id
         self.config = Config(self.bot_id);
