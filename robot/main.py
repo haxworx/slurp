@@ -62,13 +62,16 @@ class Robot:
         self.sitemaps = []
         url = self.address + '/robots.txt';
         self.page_list.append(url)
+        self.rp = None
         try:
             rp = urllib.robotparser.RobotFileParser()
             rp.set_url(url)
             rp.read()
-        except urllib.error.URLError as e:
-            self.log.warning("unable to read robots.txt: %s", e.reason)
-            self.rp = None
+        except error.URLError as e:
+            self.log.warning("failed to connect %s (%s)", url, e.reason)
+            return
+        except error.HTTPError as e:
+            self.log.warning("failed to download %s (%i)", url, e.code)
             return
 
         self.rp = rp
