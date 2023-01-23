@@ -311,22 +311,21 @@ class Robot:
 
                 # Extract URLs and append to our page list if the current page is not a sitemap source or
                 # config.import_sitemaps is not set.
-                if not self.config.import_sitemaps or (self.config.import_sitemaps and not page.is_sitemap_source):
-                    try:
-                        content = data.decode(encoding)
-                    except UnicodeDecodeError as e:
-                        content = data.decode('iso-8859-1')
-                    links = self.hrefs.findall(content)
-                    for link in links:
-                        if self.valid_link(link):
-                            url = urljoin(self.url, link)
-                            domain = self.domain_parse(url)
-                            scheme = self.scheme_parse(url)
-                            if (domain.upper() == self.config.domain_name.upper()) and (scheme.upper() == self.config.scheme.upper()):
-                                if self.page_list.append(url, link_source=page.url):
-                                    count += 1
-                    if count:
-                        self.log.info("found %i links on %s", count, self.url)
+                try:
+                    content = data.decode(encoding)
+                except UnicodeDecodeError as e:
+                    content = data.decode('iso-8859-1')
+                links = self.hrefs.findall(content)
+                for link in links:
+                    if self.valid_link(link):
+                        url = urljoin(self.url, link)
+                        domain = self.domain_parse(url)
+                        scheme = self.scheme_parse(url)
+                        if (domain.upper() == self.config.domain_name.upper()) and (scheme.upper() == self.config.scheme.upper()):
+                            if self.page_list.append(url, link_source=page.url):
+                                count += 1
+                if count:
+                    self.log.info("found %i links on %s", count, self.url)
                 response.close()
                 time.sleep(self.config.scan_delay)
 
