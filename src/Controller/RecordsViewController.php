@@ -95,7 +95,7 @@ class RecordsViewController extends AbstractController
         }
 
         $duration = $launch->getStartTime()->format('Y-m-d H:i:s') . ' to ' .
-                    $launch->getEndTime()->format('Y-m-d H:i:s');
+                    $launch->getEndTime()?->format('Y-m-d H:i:s');
 
         $repository = $doctrine->getRepository(RobotData::class);
         $paginator = $doctrine->getRepository(RobotData::class)->getPaginator($launchId, $offset);
