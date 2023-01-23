@@ -53,6 +53,9 @@ class Robot:
             sys.exit(1)
 
     def get_robots_txt(self):
+        """
+        Initialise our robot parser and populate our sitemaps.
+        """
         self.sitemaps = []
         url = self.address + '/robots.txt';
         self.page_list.append(url)
@@ -107,6 +110,9 @@ class Robot:
         return metadata
 
     def started(self):
+        """
+        Set up health state and record the starting times of our robot.
+        """
         everything_is_fine = True
         self.is_running = True
 
@@ -130,6 +136,9 @@ class Robot:
         return everything_is_fine
 
     def finished(self):
+        """
+        Crawl finished, record our state and finishing time of our robot.
+        """
         everything_is_fine = True
         self.is_running = False
         now = datetime.now()
@@ -163,6 +172,9 @@ class Robot:
         return everything_is_fine
 
     def save_results(self, res):
+        """
+        Save a record of a single crawl.
+        """
 
         everything_is_fine = True
 
@@ -192,6 +204,9 @@ class Robot:
         return everything_is_fine
 
     def fetch_all(self):
+        """
+        Main loop of our crawler.
+        """
         self.started()
         self.get_robots_txt()
 
@@ -290,6 +305,8 @@ class Robot:
 
                 count = 0
 
+                # Extract URLs and append to our page list if the current page is not a sitemap source or
+                # config.import_sitemaps is not set.
                 if not self.config.import_sitemaps or (self.config.import_sitemaps and not page.is_sitemap_source):
                     try:
                         content = data.decode(encoding)
