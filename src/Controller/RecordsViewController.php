@@ -53,7 +53,7 @@ class RecordsViewController extends AbstractController
            $ext = $exts[0];
         }
 
-        $fileName = $record->getId();
+        $fileName = basename($record->getPath()) . $record->getId();
 
         $response = new Response($record->getDataStream());
 
