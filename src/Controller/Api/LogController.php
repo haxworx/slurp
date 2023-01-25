@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Doctrine\Persistence\ManagerRegistry;
 
-class ApiLogController extends AbstractController
+class LogController extends AbstractController
 {
     #[Route('/api/log', name: 'app_api_log', format: 'json')]
     public function index(Request $request, ManagerRegistry $doctrine): JsonResponse
