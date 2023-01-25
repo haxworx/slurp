@@ -5,7 +5,9 @@
 namespace App\Controller;
 
 use App\Entity\RobotSettings;
-use App\Entity\User;
+use App\Entity\RobotData;
+use App\Entity\RobotLog;
+use App\Entity\RobotLaunches;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,7 +31,7 @@ class AccountDeleteController extends AbstractController
 
         // Remove all user-associated data from hereon.
 
-        $botIds = $doctrine->getRepository(RobotSettings::class)->findAllBotIdsByUserId($userId);
+        $botIds = $doctrine->getRepository(RobotSettings::class)->findAllBotIdsByUserId($user->getId());
 
         foreach ($botIds as $botId) {
             $doctrine->getRepository(RobotData::class)->deleteAllByBotId($botId);

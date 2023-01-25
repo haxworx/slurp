@@ -4,7 +4,6 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
 use App\Entity\UserSettings;
 use App\Form\UserSettingsType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -46,7 +45,7 @@ class UserSettingsController extends AbstractController
             }
         }
 
-        return $this->renderForm('user_settings/index.html.twig', [
+        return $this->render('user_settings/index.html.twig', [
             'form' => $form,
             'api_key' => $user->getApiKey(),
         ]);

@@ -4,7 +4,6 @@
 
 namespace App\Controller;
 
-use App\Entity\RobotData;
 use App\Repository\RobotDataRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
