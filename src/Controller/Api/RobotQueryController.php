@@ -51,7 +51,7 @@ class RobotQueryController extends AbstractController
         $user = $this->getUser();
 
         if (!$doctrine->getRepository(RobotSettings::class)->userOwnsBot($user->getId(), $botId)) {
-            throw new \Exception(
+            throw $this->createAccessDeniedException(
                 'Bot not owned by user.'
             );
         }

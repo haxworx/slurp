@@ -10,7 +10,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Doctrine\Persistence\ManagerRegistry;
 
 class KeyController extends AbstractController
@@ -30,7 +29,7 @@ class KeyController extends AbstractController
         $token = $content->token;
 
         if (!$this->isCsrfTokenValid('regenerate-api-key', $token)) {
-            throw new AccessDeniedException('CSRF token invalid');
+            throw $this->createAccessDeniedException('CSRF token invalid');
         }
 
         $newKey = ApiKey::generate();

@@ -10,7 +10,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Doctrine\Persistence\ManagerRegistry;
 
 class LogController extends AbstractController
@@ -33,11 +32,11 @@ class LogController extends AbstractController
         $token = $content->token;
 
         if (!$doctrine->getRepository(RobotSettings::class)->userOwnsBot($user->getId(), $botId)) {
-            throw new AccessDeniedException('Bot not owned by user.');
+            throw $this->createAccessDeniedException('Bot not owned by user.');
         }
 
         if (!$this->isCsrfTokenValid('log', $token)) {
-            throw new AccessDeniedException('Invalid CSRF token.');
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
         }
 
         $logs = $doctrine->getRepository(RobotLog::class)->findAllNew($launchId, $lastId);
