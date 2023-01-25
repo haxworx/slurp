@@ -114,7 +114,7 @@ class RecordsViewController extends AbstractController
 
         $data = $record->getDataStream();
 
-        // Attempt to generate locally traversible and visually identical view
+        // Attempt to generate locally traversable and visually identical view
         // of the web page. Replace links and CSS with copies stored locally
         // if possible.
         if ($record->getContentType() === "text/html") {
