@@ -52,7 +52,7 @@ def main():
                 print("Retry...{}" . format(retry_count), file=sys.stderr)
                 continue
 
-    print("Entering main loop")
+    print("Entering main loop", file=sys.stderr)
 
     jobs = dict();
     jobs['ids'] = []
