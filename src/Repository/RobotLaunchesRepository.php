@@ -21,10 +21,10 @@ class RobotLaunchesRepository extends ServiceEntityRepository
         parent::__construct($registry, RobotLaunches::class);
     }
 
-    public function findOneByLaunchId($launchId)
+    public function findOneById($launchId)
     {
         return $this->createQueryBuilder('c')
-            ->andWhere('c.id = :launchId')
+            ->where('c.id = :launchId')
             ->setParameter('launchId', $launchId)
             ->getQuery()
             ->getOneOrNullResult();

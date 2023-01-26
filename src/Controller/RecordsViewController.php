@@ -155,7 +155,7 @@ class RecordsViewController extends AbstractController
             );
         }
     
-        $launch = $doctrine->getRepository(RobotLaunches::class)->findOneByLaunchId($launchId);
+        $launch = $doctrine->getRepository(RobotLaunches::class)->findOneById($launchId);
         if (!$launch) {
             throw $this->createNotFoundException(
                 'No launch for id: ' . $launchId
