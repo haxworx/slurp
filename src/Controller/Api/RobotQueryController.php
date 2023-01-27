@@ -44,7 +44,7 @@ class RobotQueryController extends AbstractController
     }
 
     #[Route('/api/robot/launches/{botId}', name: 'app_api_robot_launches')]
-    public function getLauchesByBotId(Request $request, ManagerRegistry $doctrine, int $botId): Response
+    public function getLaunchesByBotId(Request $request, ManagerRegistry $doctrine, int $botId): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
