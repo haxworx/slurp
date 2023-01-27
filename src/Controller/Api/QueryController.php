@@ -17,7 +17,7 @@ use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Doctrine\Persistence\ManagerRegistry;
 
-class RobotQueryController extends AbstractController
+class QueryController extends AbstractController
 {
     private $serializer = null;
 
