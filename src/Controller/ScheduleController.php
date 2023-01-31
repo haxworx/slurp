@@ -138,8 +138,6 @@ class ScheduleController extends AbstractController
         
         $notifier->send(New Notification('Robot removed.', ['browser']));
 
-        $response = new JsonResponse(['message' => 'ok']);
-
-        return $response;
+        return new JsonResponse(['message' => 'ok']);
     }
 }

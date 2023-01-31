@@ -19,7 +19,7 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class QueryController extends AbstractController
 {
-    private $serializer = null;
+    private ?Serializer $serializer = null;
 
     public function __construct()
     {

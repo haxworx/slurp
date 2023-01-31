@@ -15,10 +15,8 @@ class SearchController extends AbstractController
     #[Route('/search', name: 'app_search', methods: ['GET', 'POST'])]
     public function index(Request $request, RobotDataRepository $recordsRepository): Response
     {
-        $offset = 0;
         $count = 0;
         $paginator = null;
-        $searchTerm = "";
 
         $this->denyAccessUnlessGranted('ROLE_USER');
 

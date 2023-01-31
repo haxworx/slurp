@@ -14,7 +14,7 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class KeyController extends AbstractController
 {
-    #[Route('/api/key/regenerate', name: 'app_api_key', format: 'json', methods: ['POST'])]
+    #[Route('/api/key/regenerate', name: 'app_api_key', methods: ['POST'], format: 'json')]
     public function index(Request $request, ManagerRegistry $doctrine): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
@@ -39,8 +39,6 @@ class KeyController extends AbstractController
         $entityManager->persist($user);
         $entityManager->flush();
 
-        $response = new JsonResponse(['api-key' => $newKey, 'message' => 'ok']);
-
-        return $response;
+        return new JsonResponse(['api-key' => $newKey, 'message' => 'ok']);
     }
 }

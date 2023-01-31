@@ -25,23 +25,7 @@ class RecordsViewController extends AbstractController
     #[Route('/records/download/{botId}/record/{recordId}', name: 'app_records_download')]
     public function download(Request $request, int $botId, int $recordId): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_USER');
-
-        $user = $this->getUser();
-        $doctrine = $this->doctrine;
-
-        if (!$doctrine->getRepository(RobotSettings::class)->userOwnsBot($user->getId(), $botId)) {
-            throw $this->createAccessDeniedException(
-                'User does not own bot.'
-            );
-        }
-
-        $record = $doctrine->getRepository(RobotData::class)->findOneById($recordId);
-        if (!$record) {
-            throw $this->createNotFoundException(
-                'No record found.'
-            );
-        }
+        $record = $this->getRecordByBotIdAndId($botId, $recordId);
 
         // Determine our file extension.
         $ext = "txt";
@@ -93,23 +77,7 @@ class RecordsViewController extends AbstractController
     #[Route('/records/view/{botId}/launch/{launchId}/record/{recordId}', name: 'app_records_view')]
     public function view(Request $request, int $botId, int $recordId, int $launchId): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_USER');
-
-        $user = $this->getUser();
-        $doctrine = $this->doctrine;
-
-        if (!$doctrine->getRepository(RobotSettings::class)->userOwnsBot($user->getId(), $botId)) {
-            throw $this->createAccessDeniedException(
-                'User does not own bot.'
-            );
-        }
-
-        $record = $doctrine->getRepository(RobotData::class)->findOneById($recordId);
-        if (!$record) {
-            throw $this->createNotFoundException(
-                'No record found.'
-            );
-        }
+        $record = $this->getRecordByBotIdAndId($botId, $recordId);
 
         $data = $record->getDataStream();
 
@@ -179,5 +147,32 @@ class RecordsViewController extends AbstractController
             'address' => $settings->getScheme() . "://" . $settings->getDomainName(),
             'duration' => $duration,
         ]);
+    }
+
+    /**
+     * @param int $botId
+     * @param int $recordId
+     * @return RobotData
+     */
+    public function getRecordByBotIdAndId(int $botId, int $recordId): RobotData
+    {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
+        $user = $this->getUser();
+        $doctrine = $this->doctrine;
+
+        if (!$doctrine->getRepository(RobotSettings::class)->userOwnsBot($user->getId(), $botId)) {
+            throw $this->createAccessDeniedException(
+                'User does not own bot.'
+            );
+        }
+
+        $record = $doctrine->getRepository(RobotData::class)->findOneById($recordId);
+        if (!$record) {
+            throw $this->createNotFoundException(
+                'No record found.'
+            );
+        }
+        return $record;
     }
 }
