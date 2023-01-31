@@ -76,7 +76,7 @@ export default class extends Controller {
     clearSelectElements(selectElement) {
         let length = selectElement.options.length;
         for (let i = length -1; i >= 1; i--) {
-            if (selectElement.options[i].value != "") {
+            if (selectElement.options[i].value !== "") {
                 selectElement.remove(i);
             }
         }
