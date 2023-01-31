@@ -46,7 +46,7 @@ class RobotDataRepository extends ServiceEntityRepository
     public function getPaginator(int $launchId, int $offset): Paginator
     {
         $query = $this->createQueryBuilder('c')
-            ->Where('c.launchId = :launchId')
+            ->where('c.launchId = :launchId')
             ->setParameter('launchId', $launchId)
             ->setMaxResults(self::PAGINATOR_PER_PAGE)
             ->setFirstResult($offset)
@@ -54,6 +54,16 @@ class RobotDataRepository extends ServiceEntityRepository
         ;
 
         return new Paginator($query);
+    }
+
+    public function getCountByBotId(int $botId): int
+    {
+        return $this->createQueryBuilder('c')
+            ->select('count(c.id)')
+            ->where('c.botId = :botId')
+            ->setParameter('botId', $botId)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     public function findRecordIdByLaunchIdAndPath(int $launchId, string $path): ?int

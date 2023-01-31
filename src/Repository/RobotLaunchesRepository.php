@@ -30,6 +30,27 @@ class RobotLaunchesRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    public function findLastLaunchByBotId(int $botId)
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.botId = :botId')
+            ->setParameter('botId', $botId)
+            ->orderBy('c.id', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function getCountByBotId(int $botId): int
+    {
+        return $this->createQueryBuilder('c')
+            ->select('count(c.id)')
+            ->where('c.botId = :botId')
+            ->setParameter('botId', $botId)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     public function save(RobotLaunches $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);

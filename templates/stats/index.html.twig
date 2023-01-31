@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Stats{% endblock %}
+
+{% block body %}
+
+<table class="table table-striped">
+    <thead>
+        <th>name</th>
+        <th>last launched</th>
+        <th>total scans</th>
+        <th>total records</th>
+    </thead>
+    <tbody>
+{% for stat in stats %}
+    <tr>
+        <td>{{ stat.name }}</td>
+        <td>{{ stat.last_launched | date('Y-m-d H:i:s')}}</td>
+        <td>{{ stat.total_launches }}</td>
+        <td>{{ stat.total_records }}</td>
+    </tr>
+{%  endfor %}
+    </tbody>
+</table>
+{% endblock %}

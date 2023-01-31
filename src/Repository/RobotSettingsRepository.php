@@ -41,7 +41,7 @@ class RobotSettingsRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
-   public function userOwnsBot(int $userId, int $botId): bool
+    public function userOwnsBot(int $userId, int $botId): bool
     {
         return (bool) $this->createQueryBuilder('c')
             ->where('c.userId = :userId')
