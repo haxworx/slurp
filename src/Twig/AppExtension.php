@@ -16,6 +16,7 @@ class AppExtension extends AbstractExtension
             new TwigFilter('ellipsis', [$this, 'ellipsis']),
             new TwigFilter('fuzzy_date', [$this, 'fuzzyDate']),
             new TwigFilter('has_error', [$this, 'hasError']),
+            new TwigFilter('size_format', [$this, 'sizeFormat']),
         ];
     }
 
@@ -36,5 +37,40 @@ class AppExtension extends AbstractExtension
     public function hasError(?bool $hasError): string
     {
         return $hasError ? "true" : "false";
+    }
+
+    // Take bytes and convert to a human-readable string.
+    public function sizeFormat(?int $bytes): string
+    {
+        $i = 0;
+        $powi = 1;
+        $precision = 2;
+        $powj = 1;
+        $units = [
+            "B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB",
+        ];
+
+        if ((is_null($bytes)) || (!is_integer($bytes))) {
+            $bytes = 0;
+        }
+
+        $value = $bytes;
+
+        while ($value > 1024) {
+            if (($value / 1024) < $powi) break;
+            $powi *= 1024;
+            $i++;
+            if ($i === (count($units))) break;
+        }
+
+        if (!$i) $precision = 0;
+
+        while ($precision > 0) {
+            $powj *= 10;
+            if (($value / $powi) < $powj) break;
+            --$precision;
+        }
+
+        return sprintf("%1.*f %s", $precision, $value / $powi, $units[$i]);
     }
 }

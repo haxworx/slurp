@@ -10,6 +10,7 @@
         <th>last started</th>
         <th>last finished</th>
         <th>total scans</th>
+        <th>total size</th>
         <th>total records</th>
     </thead>
     <tbody>
@@ -19,6 +20,7 @@
         <td>{{ stat.last_started | date('Y-m-d H:i:s')}}</td>
         <td>{{ stat.last_finished | date('Y-m-d H:i:s')}}</td>
         <td>{{ stat.total_launches }}</td>
+        <td>{{ stat.total_bytes | size_format}}</td>
         <td>{{ stat.total_records }}</td>
     </tr>
 {%  endfor %}

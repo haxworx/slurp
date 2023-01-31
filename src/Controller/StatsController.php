@@ -26,6 +26,8 @@ class StatsController extends AbstractController
             $launch = $doctrine->getRepository(RobotLaunches::class)->findLastLaunchByBotId($botId);
             $launchCount = $doctrine->getRepository(RobotLaunches::class)->getCountByBotId($botId);
             $recordsCount = $doctrine->getRepository(RobotData::class)->getCountByBotId($botId);
+            $byteCount = $doctrine->getRepository(RobotData::class)->getByteCountByBotId($botId);
+
             $stat = [
                 'bot_id' => $botId,
                 'name' => sprintf("(%s) %s", $setting->getScheme(), $setting->getDomainName()),
@@ -33,6 +35,7 @@ class StatsController extends AbstractController
                 'last_finished' => $launch?->getEndTime() ?? "n/a",
                 'total_records' => $recordsCount,
                 'total_launches' => $launchCount,
+                'total_bytes' => $byteCount,
             ];
             $stats[] = $stat;
         }

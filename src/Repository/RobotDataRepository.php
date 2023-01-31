@@ -66,6 +66,16 @@ class RobotDataRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
+    public function getByteCountByBotId(int $botId): int
+    {
+        return $this->createQueryBuilder('c')
+            ->select('sum(c.length)')
+            ->where('c.botId = :botId')
+            ->setParameter('botId', $botId)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     public function findRecordIdByLaunchIdAndPath(int $launchId, string $path): ?int
     {
         $record = $this->createQueryBuilder('c')
