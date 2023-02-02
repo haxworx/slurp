@@ -47,7 +47,7 @@ class AppExtension extends AbstractExtension
         $precision = 2;
         $powj = 1;
         $units = [
-            "B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB",
+            "B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "N/A",
         ];
 
         if ((is_null($bytes)) || (!is_integer($bytes))) {
@@ -60,7 +60,7 @@ class AppExtension extends AbstractExtension
             if (($value / 1024) < $powi) break;
             $powi *= 1024;
             $i++;
-            if ($i === (count($units))) break;
+            if ($i === (count($units)-1)) break;
         }
 
         if (!$i) $precision = 0;
