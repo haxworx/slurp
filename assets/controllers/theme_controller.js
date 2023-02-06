@@ -46,10 +46,12 @@ export default class extends Controller {
     setTheme() {
         if (this.currentTheme === "light") {
             document.querySelector('html').style.filter = "invert(0%)";
-
         } else {
             document.querySelector('html').style.filter = "invert(100%)";
-            document.querySelector('iframe').style.filter = "invert(100%)";
+            let iframe = document.querySelector('iframe');
+            if (iframe) {
+                iframe.style.filter = "invert(100%)";
+            }
         }
         this.toggleText();
     }
