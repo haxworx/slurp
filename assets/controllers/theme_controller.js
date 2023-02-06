@@ -32,7 +32,7 @@ export default class extends Controller {
         }
     }
 
-    themeToggle(event) {
+    themeToggle() {
         if (this.currentTheme === "light") {
             this.currentTheme = "dark";
         } else {
@@ -46,8 +46,10 @@ export default class extends Controller {
     setTheme() {
         if (this.currentTheme === "light") {
             document.querySelector('html').style.filter = "invert(0%)";
+
         } else {
             document.querySelector('html').style.filter = "invert(100%)";
+            document.querySelector('iframe').style.filter = "invert(100%)";
         }
         this.toggleText();
     }
