@@ -51,6 +51,23 @@ class RobotLaunchesRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
+    public function getCountByBotIdAndDate(int $botId, string $date): int
+    {
+        $conn = $this->getEntityManager()
+            ->getConnection();
+        $queryBuilder = $conn->createQueryBuilder();
+
+        return $queryBuilder
+            ->select('count(id)')
+            ->from('robot_launches')
+            ->where('bot_id = :botId')
+            ->setParameter('botId', $botId)
+            ->andWhere('DATE(start_time) = :date')
+            ->setParameter('date', $date)
+            ->executeQuery()
+            ->fetchOne();
+    }
+
     public function save(RobotLaunches $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);

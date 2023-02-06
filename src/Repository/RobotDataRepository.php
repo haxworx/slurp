@@ -7,7 +7,7 @@ use App\Entity\RobotSettings;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\Tools\Pagination\Paginator;
-
+use Doctrine\DBAL\Query\QueryBuilder;
 /**
  * @extends ServiceEntityRepository<RobotData>
  *
@@ -64,6 +64,24 @@ class RobotDataRepository extends ServiceEntityRepository
             ->setParameter('botId', $botId)
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+
+    public function getCountByBotIdAndDate(int $botId, string $date): int
+    {
+        $conn = $this->getEntityManager()
+            ->getConnection();
+        $queryBuilder = $conn->createQueryBuilder();
+
+        return $queryBuilder
+            ->select('count(id)')
+            ->from('robot_data')
+            ->where('bot_id = :botId')
+            ->setParameter('botId', $botId)
+            ->andWhere('DATE(time_stamp) = :date')
+            ->setParameter('date', $date)
+            ->executeQuery()
+            ->fetchOne();
     }
 
     public function getByteCountByBotId(int $botId): int
