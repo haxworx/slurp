@@ -20,7 +20,6 @@ class RobotSettings
     #[ORM\Column(length: 8192)]
     private ?string $domainName = null;
 
-
     #[CustomValidator\IsScheme]
     #[ORM\Column(length: 16)]
     private ?string $scheme = null;
@@ -198,5 +197,10 @@ class RobotSettings
         $this->hasError = $hasError;
 
         return $this;
+    }
+
+    public function getName(): string
+    {
+       return sprintf("(%s) %s", $this->getScheme(), $this->getDomainName());
     }
 }

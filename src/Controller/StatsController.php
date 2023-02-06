@@ -30,7 +30,7 @@ class StatsController extends AbstractController
 
             $stat = [
                 'bot_id' => $botId,
-                'name' => sprintf("(%s) %s", $setting->getScheme(), $setting->getDomainName()),
+                'name' => $setting->getName(),
                 'last_started' => $launch?->getStartTime(),
                 'last_finished' => $launch?->getEndTime() ?? "n/a",
                 'total_records' => $recordsCount,
