@@ -46,7 +46,8 @@ class LogController extends AbstractController
             $content->lastId = $logs[$n - 1]->getId();
             foreach ($logs as $log) {
                 $msg = $log->getMessage();
-                $txt .= $msg['message'] . "\n";
+                $dateTxt = $log->getTimeStamp()->format('Y-m-d H:i:s');
+                $txt .= sprintf("%s:%s\n", $dateTxt, $msg['message']);
             }
             $content->logs = $txt;
         }
