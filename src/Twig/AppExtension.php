@@ -4,7 +4,7 @@
 
 namespace App\Twig;
 
-use App\Utils\FuzzyDateTime;
+use App\Utils\FuzzyDate;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
@@ -32,7 +32,7 @@ class AppExtension extends AbstractExtension
 
     public function fuzzyDate(?\DateTime $dateTime): string
     {
-        return FuzzyDateTime::get($dateTime);
+        return FuzzyDate::get($dateTime);
     }
 
     public function hasError(?bool $hasError): string

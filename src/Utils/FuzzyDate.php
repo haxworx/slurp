@@ -4,7 +4,7 @@
 
 namespace App\Utils;
 
-class FuzzyDateTime
+class FuzzyDate
 {
     public static function get(?\DateTime $dateTime): string
     {
