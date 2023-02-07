@@ -15,6 +15,12 @@ use Symfony\UX\Chartjs\Model\Chart;
 
 class StatsController extends AbstractController
 {
+    public function __construct(ManagerRegistry $doctrine)
+    {
+        $this->launchesRepository = $doctrine->getRepository(RobotLaunches::class);
+        $this->dataRepository = $doctrine->getRepository(RobotData::class);
+    }
+
     #[Route('/stats', name: 'app_stats')]
     public function index(ManagerRegistry $doctrine): Response
     {
@@ -26,10 +32,10 @@ class StatsController extends AbstractController
         $settings = $doctrine->getRepository(RobotSettings::class)->findAllByUserId($user->getId());
         foreach ($settings as $setting) {
             $botId = $setting->getId();
-            $launch = $doctrine->getRepository(RobotLaunches::class)->findLastLaunchByBotId($botId);
-            $launchCount = $doctrine->getRepository(RobotLaunches::class)->getCountByBotId($botId);
-            $recordsCount = $doctrine->getRepository(RobotData::class)->getCountByBotId($botId);
-            $byteCount = $doctrine->getRepository(RobotData::class)->getByteCountByBotId($botId);
+            $launch = $this->launchesRepository->findLastLaunchByBotId($botId);
+            $launchCount = $this->launchesRepository->getCountByBotId($botId);
+            $recordsCount = $this->dataRepository->getCountByBotId($botId);
+            $byteCount = $this->dataRepository->getByteCountByBotId($botId);
 
             $stat = [
                 'bot_id' => $botId,
@@ -63,11 +69,12 @@ class StatsController extends AbstractController
 
         $dates = Dates::lastWeekArray();
 
-        foreach ($dates as $key => $date) {
-            $dates[$key]['totalRecords'] =
-                $doctrine->getRepository(RobotData::class)->getCountByBotIdAndDate($botId, $date['date']);
-            $dates[$key]['totalLaunches'] =
-                $doctrine->getRepository(RobotLaunches::class)->getCountByBotIdAndDate($botId, $date['date']);
+
+        foreach ($dates as $i => $date) {
+            $dates[$i]['totalRecords'] =
+                $this->dataRepository->getCountByBotIdAndDate($botId, $date['date']);
+            $dates[$i]['totalLaunches'] =
+                $this->launchesRepository->getCountByBotIdAndDate($botId, $date['date']);
         }
 
         $chart->setData([
