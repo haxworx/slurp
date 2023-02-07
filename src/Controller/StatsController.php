@@ -69,7 +69,6 @@ class StatsController extends AbstractController
 
         $dates = Dates::lastWeekArray();
 
-
         foreach ($dates as $i => $date) {
             $dates[$i]['totalRecords'] =
                 $this->dataRepository->getCountByBotIdAndDate($botId, $date['date']);

@@ -6,6 +6,7 @@ namespace App\Controller\Api;
 
 use App\Utils\ApiKey;
 use Doctrine\Persistence\ManagerRegistry;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,7 +24,7 @@ class KeyController extends AbstractController
 
         $content = json_decode($request->getContent(), false);
         if ((!$content) || (!isset($content->token))) {
-            throw new \Exception('Missing parameters');
+            throw new Exception('Missing parameters');
         }
 
         $token = $content->token;

@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class SearchController extends AbstractController
 {
     #[Route('/search', name: 'app_search', methods: ['GET', 'POST'])]
-    public function index(Request $request, RobotDataRepository $recordsRepository): Response
+    public function index(Request $request, RobotDataRepository $dataRepository): Response
     {
         $count = 0;
         $paginator = null;
@@ -26,7 +26,7 @@ class SearchController extends AbstractController
         $offset = $request->get('offset') ?? 0;
 
         if ($searchTerm) {
-            $paginator = $recordsRepository->getSearchPaginator($searchTerm, $offset, $user->getId());
+            $paginator = $dataRepository->getSearchPaginator($searchTerm, $offset, $user->getId());
             $count = count($paginator);
         }
 
