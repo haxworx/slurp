@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
-use App\Entity\RobotSettings;
 use App\Entity\RobotData;
 use App\Entity\RobotLaunches;
+use App\Entity\RobotSettings;
 use App\Utils\Dates;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -35,7 +35,7 @@ class StatsController extends AbstractController
                 'bot_id' => $botId,
                 'name' => $setting->getName(),
                 'last_started' => $launch?->getStartTime(),
-                'last_finished' => $launch?->getEndTime() ?? "n/a",
+                'last_finished' => $launch?->getEndTime() ?? 'n/a',
                 'total_records' => $recordsCount,
                 'total_launches' => $launchCount,
                 'total_bytes' => $byteCount,
@@ -56,9 +56,7 @@ class StatsController extends AbstractController
         $user = $this->getUser();
 
         if (!$doctrine->getRepository(RobotSettings::class)->userOwnsBot($user->getId(), $botId)) {
-            throw $this->createAccessDeniedException(
-                'User does not own bot.'
-            );
+            throw $this->createAccessDeniedException('User does not own bot.');
         }
 
         $chart = $chartBuilder->createChart(Chart::TYPE_LINE);
@@ -87,7 +85,7 @@ class StatsController extends AbstractController
                     'borderColor' => 'rgb(99, 255, 132)',
                     'data' => array_column($dates, 'totalLaunches'),
                 ],
-            ]
+            ],
         ]);
 
         $chart->setOptions([

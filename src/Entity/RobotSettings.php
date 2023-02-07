@@ -3,9 +3,9 @@
 namespace App\Entity;
 
 use App\Repository\RobotSettingsRepository;
+use App\Validator as CustomValidator;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use App\Validator as CustomValidator;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: RobotSettingsRepository::class)]
@@ -201,6 +201,6 @@ class RobotSettings
 
     public function getName(): string
     {
-       return sprintf("(%s) %s", $this->getScheme(), $this->getDomainName());
+        return sprintf('(%s) %s', $this->getScheme(), $this->getDomainName());
     }
 }

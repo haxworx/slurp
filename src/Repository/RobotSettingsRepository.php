@@ -4,8 +4,8 @@ namespace App\Repository;
 
 use App\Entity\RobotSettings;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\AbstractQuery;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<RobotSettings>
@@ -61,6 +61,7 @@ class RobotSettingsRepository extends ServiceEntityRepository
             ->groupBy('c.id')
             ->getQuery()
             ->getResult(AbstractQuery::HYDRATE_SCALAR_COLUMN);
+
         return $result;
     }
 
@@ -76,6 +77,7 @@ class RobotSettingsRepository extends ServiceEntityRepository
             ->setParameter('scheme', $settings->getScheme())
             ->getQuery()
             ->getSingleScalarResult();
+
         return $n > 0 ? true : false;
     }
 

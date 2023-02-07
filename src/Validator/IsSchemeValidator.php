@@ -19,7 +19,6 @@ class IsSchemeValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, IsScheme::class);
         }
 
-
         if (null === $value || '' === $value) {
             return;
         }

@@ -26,7 +26,7 @@ class RobotData
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $linkSource = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable:true)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $modified = null;
 
     #[ORM\Column]

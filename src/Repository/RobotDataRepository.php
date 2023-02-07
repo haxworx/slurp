@@ -5,9 +5,9 @@ namespace App\Repository;
 use App\Entity\RobotData;
 use App\Entity\RobotSettings;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\Tools\Pagination\Paginator;
-use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
+
 /**
  * @extends ServiceEntityRepository<RobotData>
  *
@@ -32,7 +32,7 @@ class RobotDataRepository extends ServiceEntityRepository
 
         $query = $this->createQueryBuilder('c')
             ->where('c.data LIKE :searchTerm')
-            ->setParameter('searchTerm', '%' . $searchTerm . '%')
+            ->setParameter('searchTerm', '%'.$searchTerm.'%')
             ->andWhere('c.botId IN (:ids)')
             ->setParameter('ids', $ids)
             ->setMaxResults(self::PAGINATOR_PER_PAGE)
@@ -65,7 +65,6 @@ class RobotDataRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
-
 
     public function getCountByBotIdAndDate(int $botId, string $date): int
     {

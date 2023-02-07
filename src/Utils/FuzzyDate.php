@@ -8,8 +8,8 @@ class FuzzyDateTime
 {
     public static function get(?\DateTime $dateTime): string
     {
-        $out = "n/a";
-        if ($dateTime === null) {
+        $out = 'n/a';
+        if (null === $dateTime) {
             return $out;
         }
 
@@ -18,13 +18,13 @@ class FuzzyDateTime
         $secs = $now->format('U') - $dateTime->format('U');
         if ($secs < 3600) {
             $mins = round($secs / 60);
-            $out = "$mins minute" . ($mins != 1 ? 's' : '') . ' ago';
-        } else if (($secs > 3600) && ($secs < 86400)) {
+            $out = "$mins minute".(1 != $mins ? 's' : '').' ago';
+        } elseif (($secs > 3600) && ($secs < 86400)) {
             $hours = round($secs / 3600);
-            $out = "$hours hour" . ($hours != 1 ? 's' : '') . ' ago';
+            $out = "$hours hour".(1 != $hours ? 's' : '').' ago';
         } else {
             $days = round($secs / 86400);
-            $out = "$days day" . ($days != 1 ? 's' : '') . ' ago';
+            $out = "$days day".(1 != $days ? 's' : '').' ago';
         }
 
         return $out;

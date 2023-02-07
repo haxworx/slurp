@@ -94,7 +94,7 @@ class RobotLaunchesRepository extends ServiceEntityRepository
             ->orderBy('c.id', 'DESC')
             ->getQuery()
             ->getResult();
-    }            
+    }
 
     public function deleteAllByBotId(int $botId): void
     {

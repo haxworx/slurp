@@ -4,15 +4,15 @@
 
 namespace App\Controller;
 
-use App\Entity\RobotSettings;
 use App\Entity\RobotData;
-use App\Entity\RobotLog;
 use App\Entity\RobotLaunches;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use App\Entity\RobotLog;
+use App\Entity\RobotSettings;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 class AccountDeleteController extends AbstractController
 {

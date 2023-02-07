@@ -14,7 +14,7 @@ class GlobalSettingsFixtures extends Fixture
     {
         $settings = new GlobalSettings();
         $settings->setMaxRobots(5);
-        $settings->setTimestamp(new \DateTime("NOW"));
+        $settings->setTimestamp(new \DateTime('NOW'));
         $manager->persist($settings);
         $manager->flush();
     }

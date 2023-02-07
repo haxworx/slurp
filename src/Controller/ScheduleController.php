@@ -4,20 +4,20 @@
 
 namespace App\Controller;
 
-use App\Entity\RobotSettings;
 use App\Entity\GlobalSettings;
 use App\Entity\RobotData;
-use App\Entity\RobotLog;
 use App\Entity\RobotLaunches;
+use App\Entity\RobotLog;
+use App\Entity\RobotSettings;
 use App\Form\RobotSettingsType;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Notifier\Notification\Notification;
 use Symfony\Component\Notifier\NotifierInterface;
+use Symfony\Component\Routing\Annotation\Route;
 
 class ScheduleController extends AbstractController
 {
@@ -39,7 +39,7 @@ class ScheduleController extends AbstractController
             $repository = $doctrine->getRepository(RobotSettings::class);
             $robotCount = $repository->countByUserId($user->getId());
             if ($robotCount >= $globalSettings->getMaxRobots()) {
-                $notifier->send(new Notification('Reached maximum number of robots (' . $robotCount . ')', ['browser']));
+                $notifier->send(new Notification('Reached maximum number of robots ('.$robotCount.')', ['browser']));
             } else {
                 $exists = $repository->domainExists($settings, $user->getId());
                 if ($exists) {
@@ -67,14 +67,12 @@ class ScheduleController extends AbstractController
     public function edit(Request $request, ManagerRegistry $doctrine, NotifierInterface $notifier, int $botId): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
-    
+
         $user = $this->getUser();
 
         $settings = $doctrine->getRepository(RobotSettings::class)->findOneByUserIdAndBotId($user->getId(), $botId);
         if (!$settings) {
-            throw $this->createNotFoundException(
-                'No robot for id: ' . $botId
-            );
+            throw $this->createNotFoundException('No robot for id: '.$botId);
         }
 
         $form = $this->createForm(RobotSettingsType::class, $settings, [
@@ -89,7 +87,7 @@ class ScheduleController extends AbstractController
             $repository = $doctrine->getRepository(RobotSettings::class);
             $exists = $repository->domainExists($settings, $user->getId());
             $same = $repository->isSameEntity($settings, $user->getId());
-            if (($exists && !$same)) {
+            if ($exists && !$same) {
                 $notifier->send(new Notification('Robot exists with that scheme and domain.', ['browser']));
             } else {
                 $entityManager = $doctrine->getManager();
@@ -100,10 +98,10 @@ class ScheduleController extends AbstractController
         }
 
         return $this->render('schedule/index.html.twig', [
-            'form' => $form
+            'form' => $form,
         ]);
     }
-    
+
     #[Route('/schedule/delete/{botId}', name: 'app_schedule_delete', format: 'json', methods: ['POST'])]
     public function rm(Request $request, ManagerRegistry $doctrine, NotifierInterface $notifier, int $botId): Response
     {
@@ -121,9 +119,7 @@ class ScheduleController extends AbstractController
 
         $settings = $doctrine->getRepository(RobotSettings::class)->findOneByUserIdAndBotId($user->getId(), $botId);
         if (!$settings) {
-            throw $this->createNotFoundException(
-                'No robot for id: ' . $botId
-            );
+            throw $this->createNotFoundException('No robot for id: '.$botId);
         }
 
         // Remove database data.
@@ -135,8 +131,8 @@ class ScheduleController extends AbstractController
         $entityManager = $doctrine->getManager();
         $entityManager->remove($settings);
         $entityManager->flush();
-        
-        $notifier->send(New Notification('Robot removed.', ['browser']));
+
+        $notifier->send(new Notification('Robot removed.', ['browser']));
 
         return new JsonResponse(['message' => 'ok']);
     }

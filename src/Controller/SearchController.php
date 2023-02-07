@@ -6,9 +6,9 @@ namespace App\Controller;
 
 use App\Repository\RobotDataRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 class SearchController extends AbstractController
 {
@@ -20,7 +20,7 @@ class SearchController extends AbstractController
 
         $this->denyAccessUnlessGranted('ROLE_USER');
 
-        $user = $this->getUser(); 
+        $user = $this->getUser();
 
         $searchTerm = $request->get('search') ?? null;
         $offset = $request->get('offset') ?? 0;

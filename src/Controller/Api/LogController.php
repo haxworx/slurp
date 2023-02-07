@@ -4,13 +4,13 @@
 
 namespace App\Controller\Api;
 
-use App\Entity\RobotSettings;
 use App\Entity\RobotLog;
+use App\Entity\RobotSettings;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Doctrine\Persistence\ManagerRegistry;
 
 class LogController extends AbstractController
 {
@@ -42,7 +42,7 @@ class LogController extends AbstractController
         $logs = $doctrine->getRepository(RobotLog::class)->findAllNew($launchId, $lastId);
         $n = count($logs);
         if ($n) {
-            $txt = "";
+            $txt = '';
             $content->lastId = $logs[$n - 1]->getId();
             foreach ($logs as $log) {
                 $msg = $log->getMessage();
@@ -51,7 +51,7 @@ class LogController extends AbstractController
             }
             $content->logs = $txt;
         }
-    
+
         $response = new JsonResponse();
         $response->setContent(json_encode($content));
 

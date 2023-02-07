@@ -4,9 +4,9 @@
 
 namespace App\Twig;
 
+use App\Utils\FuzzyDateTime;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
-use App\Utils\FuzzyDateTime;
 
 class AppExtension extends AbstractExtension
 {
@@ -24,8 +24,9 @@ class AppExtension extends AbstractExtension
     {
         $length = strlen($text);
         if ($length >= 32) {
-            return substr($text, 0, 32) . '...';
+            return substr($text, 0, 32).'...';
         }
+
         return $text;
     }
 
@@ -36,7 +37,7 @@ class AppExtension extends AbstractExtension
 
     public function hasError(?bool $hasError): string
     {
-        return $hasError ? "true" : "false";
+        return $hasError ? 'true' : 'false';
     }
 
     // Take bytes and convert to a human-readable string.
@@ -47,30 +48,38 @@ class AppExtension extends AbstractExtension
         $precision = 2;
         $powj = 1;
         $units = [
-            "B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "N/A",
+            'B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'N/A',
         ];
 
-        if ((is_null($bytes)) || (!is_integer($bytes))) {
+        if (is_null($bytes) || (!is_integer($bytes))) {
             $bytes = 0;
         }
 
         $value = $bytes;
 
         while ($value > 1024) {
-            if (($value / 1024) < $powi) break;
+            if (($value / 1024) < $powi) {
+                break;
+            }
             $powi *= 1024;
-            $i++;
-            if ($i === (count($units)-1)) break;
+            ++$i;
+            if ($i === (count($units) - 1)) {
+                break;
+            }
         }
 
-        if (!$i) $precision = 0;
+        if (!$i) {
+            $precision = 0;
+        }
 
         while ($precision > 0) {
             $powj *= 10;
-            if (($value / $powi) < $powj) break;
+            if (($value / $powi) < $powj) {
+                break;
+            }
             --$precision;
         }
 
-        return sprintf("%1.*f %s", $precision, $value / $powi, $units[$i]);
+        return sprintf('%1.*f %s', $precision, $value / $powi, $units[$i]);
     }
 }
