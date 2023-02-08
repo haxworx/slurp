@@ -52,6 +52,15 @@ class RobotSettingsRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    public function findOneById(int $id)
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     public function findAllBotIdsByUserId($userId): array
     {
         $result = $this->createQueryBuilder('c')

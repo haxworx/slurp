@@ -4,6 +4,7 @@
 
 {% block body %}
 
+<h1 class="text-center">Statistics for {{ name }}.</h1>
 <form action="{{ path('app_robot_graphs', { botId: bot_id }) }}" method="GET">
     <label for="weekly">Last Week</label>
     <input onclick="this.form.submit()" type="radio" id="weekly" name="frequency" value="weekly" {% if frequency == "weekly" %}checked{% endif %}>

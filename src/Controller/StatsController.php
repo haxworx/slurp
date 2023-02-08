@@ -68,6 +68,8 @@ class StatsController extends AbstractController
             throw $this->createAccessDeniedException('User does not own bot.');
         }
 
+        $setting = $doctrine->getRepository(RobotSettings::class)->findOneById($botId);
+
         $chart = $chartBuilder->createChart(Chart::TYPE_LINE);
 
         $epochText = "7 days ago";
@@ -132,6 +134,7 @@ class StatsController extends AbstractController
         return $this->render('stats/graphs.html.twig', [
             'chart' => $chart,
             'bot_id' => $botId,
+            'name' => $setting->getName(),
             'frequency' => $frequency,
         ]);
     }
