@@ -83,6 +83,24 @@ class RobotDataRepository extends ServiceEntityRepository
             ->fetchOne();
     }
 
+    function getImageCountByBotIdAndDate(int $botId, string $date): int
+    {
+        $conn = $this->getEntityManager()
+            ->getConnection();
+        $queryBuilder = $conn->createQueryBuilder();
+
+        return $queryBuilder
+            ->select('count(id)')
+            ->from('robot_data')
+            ->where('bot_id = :botId')
+            ->setParameter('botId', $botId)
+            ->andWhere('DATE(time_stamp) = :date')
+            ->setParameter('date', $date)
+            ->andWhere('content_type LIKE \'%image%\'')
+            ->executeQuery()
+            ->fetchOne();
+    }
+
     public function getByteCountByBotId(int $botId): int
     {
         return $this->createQueryBuilder('c')

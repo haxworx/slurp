@@ -84,6 +84,10 @@ class StatsController extends AbstractController
                 $this->dataRepository->getCountByBotIdAndDate($botId, $date['date']);
             $dates[$i]['totalLaunches'] =
                 $this->launchesRepository->getCountByBotIdAndDate($botId, $date['date']);
+            $dates[$i]['totalImages'] =
+                $this->dataRepository->getImageCountByBotIdAndDate($botId, $date['date']);
+            $dates[$i]['totalText'] =
+                $dates[$i]['totalRecords'] - $dates[$i]['totalImages'];
         }
 
         $chart->setData([
@@ -100,6 +104,18 @@ class StatsController extends AbstractController
                     'backgroundColor' => 'rgb(54, 162, 235)',
                     'borderColor' => 'rgb(54, 162, 235)',
                     'data' => array_column($dates, 'totalLaunches'),
+                ],
+                [
+                    'label' => 'Text Records',
+                    'backgroundColor' => 'rgb(253, 180, 92)',
+                    'borderColor' => 'rgb(253, 180, 92)',
+                    'data' => array_column($dates, 'totalText'),
+                ],
+                [
+                    'label' => 'Image Records',
+                    'backgroundColor' => 'rgb(70, 191, 189)',
+                    'borderColor' => 'rgb(70, 191, 189)',
+                    'data' => array_column($dates, 'totalImages'),
                 ],
             ],
         ]);
