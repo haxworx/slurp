@@ -4,10 +4,10 @@ namespace App\Utils;
 
 class Dates
 {
-    public static function lastWeekArray(): array
+    public static function createArray(string $epoch): array
     {
         $dates = [];
-        $start = new \DateTime('7 days ago');
+        $start = new \DateTime($epoch);
         $end = new \DateTime('NOW');
         $interval = new \DateInterval('P1D');
         $end->add($interval);

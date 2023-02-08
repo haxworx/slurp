@@ -9,6 +9,7 @@ use App\Utils\Dates;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
@@ -40,8 +41,8 @@ class StatsController extends AbstractController
             $stat = [
                 'bot_id' => $botId,
                 'name' => $setting->getName(),
-                'last_started' => $launch?->getStartTime(),
-                'last_finished' => $launch?->getEndTime() ?? 'n/a',
+                'start_time' => $launch?->getStartTime(),
+                'end_time' => $launch?->getEndTime() ?? 'n/a',
                 'total_records' => $recordsCount,
                 'total_launches' => $launchCount,
                 'total_bytes' => $byteCount,
@@ -55,11 +56,13 @@ class StatsController extends AbstractController
     }
 
     #[Route('/stats/graphs/{botId}', name: 'app_robot_graphs')]
-    public function graphs(ManagerRegistry $doctrine, ChartBuilderInterface $chartBuilder, int $botId): Response
+    public function graphs(Request $request, ManagerRegistry $doctrine, ChartBuilderInterface $chartBuilder, int $botId): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
         $user = $this->getUser();
+
+        $frequency = $request->get('frequency') ?? "weekly";
 
         if (!$doctrine->getRepository(RobotSettings::class)->userOwnsBot($user->getId(), $botId)) {
             throw $this->createAccessDeniedException('User does not own bot.');
@@ -67,7 +70,12 @@ class StatsController extends AbstractController
 
         $chart = $chartBuilder->createChart(Chart::TYPE_LINE);
 
-        $dates = Dates::lastWeekArray();
+        $epochText = "7 days ago";
+        if ($frequency === "monthly") {
+            $epochText = "1 month ago";
+        }
+
+        $dates = Dates::createArray($epochText);
 
         foreach ($dates as $i => $date) {
             $dates[$i]['totalRecords'] =
@@ -105,6 +113,8 @@ class StatsController extends AbstractController
 
         return $this->render('stats/graphs.html.twig', [
             'chart' => $chart,
+            'bot_id' => $botId,
+            'frequency' => $frequency,
         ]);
     }
 }
