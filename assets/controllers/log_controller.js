@@ -91,7 +91,7 @@ export default class extends Controller {
             lastId: 0,
         };
         this.downloadLog();
-        this.interval = setInterval(this.downloadLog.bind(this), 5000);
+        this.interval = setInterval(this.downloadLog.bind(this), 1000);
     }
 
     downloadLog() {
@@ -105,7 +105,7 @@ export default class extends Controller {
         .then(response => response.json())
         .then(obj => {
             this.postObj = obj;
-            if ((this.dataTime) && (((Date.now() / 1000) - this.dataTime) >= 5.0)) {
+            if ((this.dataTime) && (((Date.now() / 1000) - this.dataTime) >= 1.0)) {
                 this.spinnerTarget.classList.add('visually-hidden');
             }
             if (!this.postObj.logs) return;
