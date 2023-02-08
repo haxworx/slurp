@@ -28,11 +28,11 @@ class ScheduleController extends AbstractController
 
         $user = $this->getUser();
 
-        $settings = new RobotSettings();
+        $bot = new RobotSettings();
 
         $globalSettings = $doctrine->getRepository(GlobalSettings::class)->findOneBy(['id' => 1]);
 
-        $form = $this->createForm(RobotSettingsType::class, $settings);
+        $form = $this->createForm(RobotSettingsType::class, $bot);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -41,14 +41,14 @@ class ScheduleController extends AbstractController
             if ($robotCount >= $globalSettings->getMaxRobots()) {
                 $notifier->send(new Notification('Reached maximum number of robots ('.$robotCount.')', ['browser']));
             } else {
-                $exists = $repository->domainExists($settings, $user->getId());
+                $exists = $repository->domainExists($bot, $user->getId());
                 if ($exists) {
                     $notifier->send(new Notification('Robot exists with that scheme and domain.', ['browser']));
                 } else {
                     $entityManager = $doctrine->getManager();
-                    $settings->setUserId($this->getUser()->getId());
+                    $bot->setUserId($this->getUser()->getId());
 
-                    $entityManager->persist($settings);
+                    $entityManager->persist($bot);
                     $entityManager->flush();
 
                     $notifier->send(new Notification('Robot scheduled.', ['browser']));
@@ -70,14 +70,14 @@ class ScheduleController extends AbstractController
 
         $user = $this->getUser();
 
-        $settings = $doctrine->getRepository(RobotSettings::class)->findOneByUserIdAndBotId($user->getId(), $botId);
-        if (!$settings) {
+        $bot = $doctrine->getRepository(RobotSettings::class)->findOneByUserIdAndBotId($user->getId(), $botId);
+        if (!$bot) {
             throw $this->createNotFoundException('No robot for id: '.$botId);
         }
 
-        $form = $this->createForm(RobotSettingsType::class, $settings, [
+        $form = $this->createForm(RobotSettingsType::class, $bot, [
             'save_button_label' => 'Update',
-            'import_sitemaps' => $settings->ImportSitemaps(),
+            'import_sitemaps' => $bot->ImportSitemaps(),
             'domain_readonly' => true,
         ]);
 
@@ -85,13 +85,13 @@ class ScheduleController extends AbstractController
 
         if ($form->isSubmitted() && $form->IsValid()) {
             $repository = $doctrine->getRepository(RobotSettings::class);
-            $exists = $repository->domainExists($settings, $user->getId());
-            $same = $repository->isSameEntity($settings, $user->getId());
+            $exists = $repository->domainExists($bot, $user->getId());
+            $same = $repository->isSameEntity($bot, $user->getId());
             if ($exists && !$same) {
                 $notifier->send(new Notification('Robot exists with that scheme and domain.', ['browser']));
             } else {
                 $entityManager = $doctrine->getManager();
-                $entityManager->persist($settings);
+                $entityManager->persist($bot);
                 $entityManager->flush();
                 $notifier->send(new Notification('Robot updated', ['browser']));
             }
@@ -117,8 +117,8 @@ class ScheduleController extends AbstractController
             throw $this->createAccessDeniedException('Invalid CSRF token');
         }
 
-        $settings = $doctrine->getRepository(RobotSettings::class)->findOneByUserIdAndBotId($user->getId(), $botId);
-        if (!$settings) {
+        $bot = $doctrine->getRepository(RobotSettings::class)->findOneByUserIdAndBotId($user->getId(), $botId);
+        if (!$bot) {
             throw $this->createNotFoundException('No robot for id: '.$botId);
         }
 
@@ -129,7 +129,7 @@ class ScheduleController extends AbstractController
         $doctrine->getRepository(RobotLaunches::class)->deleteAllByBotId($botId);
 
         $entityManager = $doctrine->getManager();
-        $entityManager->remove($settings);
+        $entityManager->remove($bot);
         $entityManager->flush();
 
         $notifier->send(new Notification('Robot removed.', ['browser']));

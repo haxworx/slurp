@@ -74,33 +74,33 @@ class RobotSettingsRepository extends ServiceEntityRepository
         return $result;
     }
 
-    public function domainExists(RobotSettings $settings, int $userId): bool
+    public function domainExists(RobotSettings $bot, int $userId): bool
     {
         $n = $this->createQueryBuilder('c')
             ->select('count(c.userId)')
             ->where('c.userId = :id')
             ->setParameter('id', $userId)
             ->andWhere('c.domainName = :domain')
-            ->setParameter('domain', $settings->getDomainName())
+            ->setParameter('domain', $bot->getDomainName())
             ->andWhere('c.scheme = :scheme')
-            ->setParameter('scheme', $settings->getScheme())
+            ->setParameter('scheme', $bot->getScheme())
             ->getQuery()
             ->getSingleScalarResult();
 
         return $n > 0 ? true : false;
     }
 
-    public function isSameEntity(RobotSettings $settings, int $userId): bool
+    public function isSameEntity(RobotSettings $bot, int $userId): bool
     {
         return (bool) $this->createQueryBuilder('c')
             ->where('c.userId = :id')
             ->setParameter('id', $userId)
             ->andWhere('c.domainName = :domain')
-            ->setParameter('domain', $settings->getDomainName())
+            ->setParameter('domain', $bot->getDomainName())
             ->andWhere('c.scheme = :scheme')
-            ->setParameter('scheme', $settings->getScheme())
+            ->setParameter('scheme', $bot->getScheme())
             ->andWhere('c.id = :botId')
-            ->setParameter('botId', $settings->getId())
+            ->setParameter('botId', $bot->getId())
             ->getQuery()
             ->getOneOrNullResult();
     }

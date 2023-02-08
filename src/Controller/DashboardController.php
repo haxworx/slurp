@@ -19,10 +19,10 @@ class DashboardController extends AbstractController
 
         $user = $this->getUser();
 
-        $settings = $doctrine->getRepository(RobotSettings::class)->findAllByUserId($user->getId());
+        $instances = $doctrine->getRepository(RobotSettings::class)->findAllByUserId($user->getId());
 
         return $this->render('dashboard/index.html.twig', [
-            'settings' => $settings,
+            'instances' => $instances,
         ]);
     }
 }

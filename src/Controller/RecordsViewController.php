@@ -113,8 +113,8 @@ class RecordsViewController extends AbstractController
             throw $this->createAccessDeniedException('User does not own bot.');
         }
 
-        $settings = $doctrine->getRepository(RobotSettings::class)->findOneByUserIdAndBotId($userId, $botId);
-        if (!$settings) {
+        $bot = $doctrine->getRepository(RobotSettings::class)->findOneByUserIdAndBotId($userId, $botId);
+        if (!$bot) {
             throw $this->createNotFoundException('No robot for id: '.$botId);
         }
 
@@ -137,7 +137,7 @@ class RecordsViewController extends AbstractController
             'count' => $n,
             'bot_id' => $botId,
             'launch_id' => $launchId,
-            'address' => $settings->getScheme().'://'.$settings->getDomainName(),
+            'address' => $bot->getScheme().'://'.$bot->getDomainName(),
             'duration' => $duration,
         ]);
     }

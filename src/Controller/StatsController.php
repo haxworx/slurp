@@ -30,9 +30,9 @@ class StatsController extends AbstractController
 
         $stats = [];
 
-        $settings = $doctrine->getRepository(RobotSettings::class)->findAllByUserId($user->getId());
-        foreach ($settings as $setting) {
-            $botId = $setting->getId();
+        $instances = $doctrine->getRepository(RobotSettings::class)->findAllByUserId($user->getId());
+        foreach ($instances as $bot) {
+            $botId = $bot->getId();
             $launch = $this->launchesRepository->findLastLaunchByBotId($botId);
             $launchCount = $this->launchesRepository->getCountByBotId($botId);
             $recordsCount = $this->dataRepository->getCountByBotId($botId);
@@ -40,7 +40,7 @@ class StatsController extends AbstractController
 
             $stat = [
                 'bot_id' => $botId,
-                'name' => $setting->getName(),
+                'name' => $bot->getName(),
                 'start_time' => $launch?->getStartTime(),
                 'end_time' => $launch?->getEndTime() ?? 'n/a',
                 'total_records' => $recordsCount,
@@ -68,7 +68,7 @@ class StatsController extends AbstractController
             throw $this->createAccessDeniedException('User does not own bot.');
         }
 
-        $setting = $doctrine->getRepository(RobotSettings::class)->findOneById($botId);
+        $bot = $doctrine->getRepository(RobotSettings::class)->findOneById($botId);
 
         $chart = $chartBuilder->createChart(Chart::TYPE_LINE);
 
@@ -134,7 +134,7 @@ class StatsController extends AbstractController
         return $this->render('stats/graphs.html.twig', [
             'chart' => $chart,
             'bot_id' => $botId,
-            'name' => $setting->getName(),
+            'name' => $bot->getName(),
             'frequency' => $frequency,
         ]);
     }

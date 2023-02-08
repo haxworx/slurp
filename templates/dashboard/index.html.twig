@@ -5,7 +5,7 @@
 <div {{ stimulus_controller('dashboard') }}>
     <h3>Robots</h3>
     <hr>
-    {%if settings|length == 0 %}
+    {%if instances|length == 0 %}
     <p class="text-center">Your robots will appear here once scheduled.</p>
     {% else %}
     <table class="table table-striped">
@@ -20,7 +20,7 @@
             <th class="text-center">actions</th>
         </thead>
         <tbody>
-            {% for bot in settings %}
+            {% for bot in instances %}
                 <tr> 
                     <td>{{ bot.id }}</td>
                     <td>{{ bot.scheme }}</td>
