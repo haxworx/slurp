@@ -73,6 +73,8 @@ class StatsController extends AbstractController
         $epochText = "7 days ago";
         if ($frequency === "monthly") {
             $epochText = "1 month ago";
+        } else {
+            $frequency = "weekly";
         }
 
         $dates = Dates::createArray($epochText);
@@ -95,8 +97,8 @@ class StatsController extends AbstractController
                 ],
                 [
                     'label' => 'Total Launches',
-                    'backgroundColor' => 'rgb(99, 255, 132)',
-                    'borderColor' => 'rgb(99, 255, 132)',
+                    'backgroundColor' => 'rgb(54, 162, 235)',
+                    'borderColor' => 'rgb(54, 162, 235)',
                     'data' => array_column($dates, 'totalLaunches'),
                 ],
             ],
