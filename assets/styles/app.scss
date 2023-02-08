@@ -1,6 +1,6 @@
 @import "~bootstrap/scss/bootstrap";
 
-*:not(iframe) {
+*:not(iframe,pre) {
     font-size: 10pt;
     font-family: "IBM Plex Sans", "Open Sans", sans-serif;
 }
