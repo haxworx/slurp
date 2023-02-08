@@ -18,8 +18,8 @@
 {% for stat in stats %}
     <tr>
         <td>{{ stat.name }}</td>
-        <td>{{ stat.start_time | date('Y-m-d H:i:s')}}</td>
-        <td>{{ stat.end_time | date('Y-m-d H:i:s')}}</td>
+        <td>{{ stat.start_time }}</td>
+        <td>{{ stat.end_time }}</td>
         <td>{{ stat.total_launches }}</td>
         <td>{{ stat.total_bytes | size_format}}</td>
         <td>{{ stat.total_records }}</td>

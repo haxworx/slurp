@@ -41,8 +41,8 @@ class StatsController extends AbstractController
             $stat = [
                 'bot_id' => $botId,
                 'name' => $bot->getName(),
-                'start_time' => $launch?->getStartTime(),
-                'end_time' => $launch?->getEndTime() ?? 'n/a',
+                'start_time' => $launch?->getStartTime()?->format('Y-m-d H:i:s'),
+                'end_time' => $launch?->getEndTime()?->format('Y-m-d H:i:s') ?? 'n/a',
                 'total_records' => $recordsCount,
                 'total_launches' => $launchCount,
                 'total_bytes' => $byteCount,
