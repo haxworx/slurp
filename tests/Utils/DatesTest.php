@@ -50,5 +50,11 @@ class DatesTest extends TestCase
     {
         $dates = Dates::createArray("7 days ago");
         $this->assertSame(count($dates), 8);
+
+        $dates = array_reverse($dates);
+        for ($i = 0; $i < 8; $i++) {
+            $date = new \DateTime("$i days ago");
+            $this->assertSame($dates[$i]['date'], $date->format('Y-m-d'));
+        }
     }
 }
