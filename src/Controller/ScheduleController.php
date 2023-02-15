@@ -59,7 +59,7 @@ class ScheduleController extends AbstractController
 
                     $notifier->send(new Notification('Robot scheduled.', ['browser']));
 
-                    $this->logger->info(sprintf("robot %d scheduled (%s) for user %d", $bot->getId(), $bot->getName(), $user->getId()));
+                    $this->logger->info("robot scheduled", [ 'id' => $bot->getId(), 'name' => $bot->getName(), 'user_id' => $user->getId() ]);
 
                     return $this->redirectToRoute('app_dashboard');
                 }
@@ -103,7 +103,7 @@ class ScheduleController extends AbstractController
                 $entityManager->flush();
                 $notifier->send(new Notification('Robot updated', ['browser']));
 
-                $this->logger->info(sprintf("robot %d edited (%s) for user %d", $bot->getId(), $bot->getName(), $user->getId()));
+                $this->logger->info("robot edited", [ 'id' => $bot->getId(), 'name' => $bot->getName(), 'user_id' => $user->getId() ]);
             }
         }
 
@@ -132,7 +132,7 @@ class ScheduleController extends AbstractController
             throw $this->createNotFoundException('No robot for id: '.$botId);
         }
 
-        $this->logger->info(sprintf("robot %d deleted (%s) for user %d", $bot->getId(), $bot->getName(), $user->getId()));
+        $this->logger->info('robot deleted', [ 'id' => $bot->getId(), 'name' => $bot->getName(), 'user_id' => $user->getId()]);
 
         // Remove database data.
 
@@ -145,8 +145,6 @@ class ScheduleController extends AbstractController
         $entityManager->flush();
 
         $notifier->send(new Notification('Robot removed.', ['browser']));
-
-
 
         return new JsonResponse(['message' => 'ok']);
     }

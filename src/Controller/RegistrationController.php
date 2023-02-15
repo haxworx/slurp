@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Utils\ApiKey;
+use App\Service\AppLogger;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -40,7 +41,9 @@ class RegistrationController extends AbstractController
 
             $entityManager->persist($user);
             $entityManager->flush();
-            // do anything else you need here, like send an email
+
+            $logger = new AppLogger();
+            $logger->info('new registration', [ 'email' => $user->getEmail(), 'user_id' => $user->getId() ]);
 
             return $this->redirectToRoute('app_dashboard');
         }

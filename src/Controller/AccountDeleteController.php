@@ -31,7 +31,7 @@ class AccountDeleteController extends AbstractController
 
         // Remove all user-associated data from hereon.
 
-        $logger->info(sprintf("user: %d account deleted", $user->getId()));
+        $logger->info("account deleted", ['user_id' => $user->getId()]);
 
         $botIds = $doctrine->getRepository(RobotSettings::class)->findAllBotIdsByUserId($user->getId());
 

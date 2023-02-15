@@ -16,43 +16,43 @@ class AppLogger
         $this->logger->pushHandler(new StreamHandler('php://stderr'));
     }
 
-    public function debug(string $message)
+    public function debug(string $message, array $context = [])
     {
-        $this->logger->debug($message);
+        $this->logger->debug($message, $context);
     }
 
-    public function info(string $message)
+    public function info(string $message, array $context = [])
     {
-        $this->logger->info($message);
+        $this->logger->info($message, $context);
     }
 
-    public function notice(string $message)
+    public function notice(string $message, array $context = [])
     {
-        $this->logger->notice($message);
+        $this->logger->notice($message, $context);
     }
 
-    public function warning(string $message)
+    public function warning(string $message, array $context = [])
     {
-        $this->logger->warning($message);
+        $this->logger->warning($message, $context);
     }
 
-    public function error(string $message)
+    public function error(string $message, array $context = [])
     {
-        $this->logger->error($message);
+        $this->logger->error($message, $context);
     }
 
-    public function critical(string $message)
+    public function critical(string $message, array $context = [])
     {
-        $this->logger->critical($message);
+        $this->logger->critical($message, $context);
     }
 
-    public function alert(string $message)
+    public function alert(string $message, array $context = [])
     {
-        $this->logger->alert($message);
+        $this->logger->alert($message, $context);
     }
 
-    public function emergency(string $message)
+    public function emergency(string $message, array $context = [])
     {
-        $this->logger->emergency($message);
+        $this->logger->emergency($message, $context);
     }
 }
