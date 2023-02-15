@@ -11,6 +11,7 @@ use App\Entity\RobotLog;
 use App\Entity\RobotSettings;
 use App\Form\RobotSettingsType;
 use App\Service\AppLogger;
+use LogicException;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -37,6 +38,9 @@ class ScheduleController extends AbstractController
         $bot = new RobotSettings();
 
         $globalSettings = $doctrine->getRepository(GlobalSettings::class)->findOneBy(['id' => 1]);
+        if (!$globalSettings) {
+            throw new LogicException('No global settings found.');
+        }
 
         $form = $this->createForm(RobotSettingsType::class, $bot);
         $form->handleRequest($request);
