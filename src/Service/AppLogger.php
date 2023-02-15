@@ -7,13 +7,17 @@ namespace App\Service;
 use Monolog\Level;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
+use Monolog\Formatter\JsonFormatter;
 
 class AppLogger
 {
     public function __construct()
     {
         $this->logger = new Logger("app");
-        $this->logger->pushHandler(new StreamHandler('php://stderr'));
+        $stream = new StreamHandler('php://stderr');
+        $formatter = new JsonFormatter();
+        $stream->setFormatter($formatter);
+        $this->logger->pushHandler($stream);
     }
 
     public function debug(string $message, array $context = [])
