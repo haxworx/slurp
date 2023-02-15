@@ -10,6 +10,7 @@ use App\Entity\RobotLaunches;
 use App\Entity\RobotLog;
 use App\Entity\RobotSettings;
 use App\Form\RobotSettingsType;
+use App\Service\AppLogger;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -21,6 +22,11 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ScheduleController extends AbstractController
 {
+    public function __construct(AppLogger $logger)
+    {
+        $this->logger = $logger;
+    }
+
     #[Route('/schedule', name: 'app_schedule')]
     public function index(Request $request, ManagerRegistry $doctrine, NotifierInterface $notifier): Response
     {
@@ -52,6 +58,8 @@ class ScheduleController extends AbstractController
                     $entityManager->flush();
 
                     $notifier->send(new Notification('Robot scheduled.', ['browser']));
+
+                    $this->logger->info(sprintf("robot %d scheduled (%s) for user %d", $bot->getId(), $bot->getName(), $user->getId()));
 
                     return $this->redirectToRoute('app_dashboard');
                 }
@@ -94,6 +102,8 @@ class ScheduleController extends AbstractController
                 $entityManager->persist($bot);
                 $entityManager->flush();
                 $notifier->send(new Notification('Robot updated', ['browser']));
+
+                $this->logger->info(sprintf("robot %d edited (%s) for user %d", $bot->getId(), $bot->getName(), $user->getId()));
             }
         }
 
@@ -122,6 +132,8 @@ class ScheduleController extends AbstractController
             throw $this->createNotFoundException('No robot for id: '.$botId);
         }
 
+        $this->logger->info(sprintf("robot %d deleted (%s) for user %d", $bot->getId(), $bot->getName(), $user->getId()));
+
         // Remove database data.
 
         $doctrine->getRepository(RobotData::class)->deleteAllByBotId($botId);
@@ -133,6 +145,8 @@ class ScheduleController extends AbstractController
         $entityManager->flush();
 
         $notifier->send(new Notification('Robot removed.', ['browser']));
+
+
 
         return new JsonResponse(['message' => 'ok']);
     }

@@ -8,6 +8,7 @@ use App\Entity\RobotData;
 use App\Entity\RobotLaunches;
 use App\Entity\RobotLog;
 use App\Entity\RobotSettings;
+use App\Service\AppLogger;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,7 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class AccountDeleteController extends AbstractController
 {
     #[Route('/account/delete', name: 'app_account_delete')]
-    public function index(Request $request, ManagerRegistry $doctrine): Response
+    public function index(Request $request, ManagerRegistry $doctrine, AppLogger $logger): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
@@ -29,6 +30,8 @@ class AccountDeleteController extends AbstractController
         }
 
         // Remove all user-associated data from hereon.
+
+        $logger->info(sprintf("user: %d account deleted", $user->getId()));
 
         $botIds = $doctrine->getRepository(RobotSettings::class)->findAllBotIdsByUserId($user->getId());
 

@@ -5,6 +5,7 @@
 namespace App\Controller\Api;
 
 use App\Utils\ApiKey;
+use App\Service\AppLogger;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,7 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class KeyController extends AbstractController
 {
     #[Route('/api/key/regenerate', name: 'app_api_key', methods: ['POST'], format: 'json')]
-    public function index(Request $request, ManagerRegistry $doctrine): Response
+    public function index(Request $request, ManagerRegistry $doctrine, AppLogger $logger): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
@@ -39,6 +40,8 @@ class KeyController extends AbstractController
         $entityManager = $doctrine->getManager();
         $entityManager->persist($user);
         $entityManager->flush();
+
+        $logger->info(sprintf("user: %d regenerated API key", $user->getId()));
 
         return new JsonResponse(['api-key' => $newKey, 'message' => 'ok']);
     }
