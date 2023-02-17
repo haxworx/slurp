@@ -17,6 +17,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class RecordsViewController extends AbstractController
 {
+    private ManagerRegistry $doctrine;
+
     public function __construct(ManagerRegistry $doctrine)
     {
         $this->doctrine = $doctrine;

@@ -23,6 +23,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ScheduleController extends AbstractController
 {
+    private AppLogger $logger;
+
     public function __construct(AppLogger $logger)
     {
         $this->logger = $logger;

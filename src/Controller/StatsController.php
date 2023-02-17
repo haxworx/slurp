@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\RobotData;
 use App\Entity\RobotLaunches;
 use App\Entity\RobotSettings;
+use App\Repository\RobotLaunchesRepository;
+use App\Repository\RobotDataRepository;
 use App\Utils\Dates;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,6 +18,9 @@ use Symfony\UX\Chartjs\Model\Chart;
 
 class StatsController extends AbstractController
 {
+    private RobotLaunchesRepository $launchesRepository;
+    private RobotDataRepository $dataRepository;
+
     public function __construct(ManagerRegistry $doctrine)
     {
         $this->launchesRepository = $doctrine->getRepository(RobotLaunches::class);
