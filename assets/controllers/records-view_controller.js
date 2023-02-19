@@ -42,7 +42,6 @@ export default class extends Controller {
         const recordId = event.params['id'];
         const botId = this.botIdValue || event.params['botId'];
         const launchId = event.params['launchId'];
-        console.log(launchId);
 
         this.reset();
         let modal = new Modal(this.modalTarget);
