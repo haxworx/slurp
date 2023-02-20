@@ -1,0 +1,3 @@
+SQL:
+CREATE INDEX index_path_launch ON robot_data (path(64), launch_id);
+
