@@ -23,10 +23,12 @@ class SearchController extends AbstractController
         $user = $this->getUser();
 
         $searchTerm = $request->get('search') ?? null;
+        $latest = $request->get('latest') ?? null;
         $offset = $request->get('offset') ?? 0;
 
         if ($searchTerm) {
-            $paginator = $dataRepository->getSearchPaginator($searchTerm, $offset, $user->getId());
+            $newerFirst = ($latest === "on") ? true : false;
+            $paginator = $dataRepository->getSearchPaginator($searchTerm, $offset, $newerFirst, $user->getId());
             $count = count($paginator);
         }
 
@@ -35,6 +37,7 @@ class SearchController extends AbstractController
             'prev' => $offset - RobotDataRepository::PAGINATOR_PER_PAGE,
             'records' => $paginator,
             'search_term' => $searchTerm,
+            'latest' => $latest,
             'count' => $count,
         ]);
     }

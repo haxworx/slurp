@@ -26,7 +26,7 @@ class RobotDataRepository extends ServiceEntityRepository
         $this->doctrine = $registry;
     }
 
-    public function getSearchPaginator(string $searchTerm, int $offset, int $userId): Paginator
+    public function getSearchPaginator(string $searchTerm, int $offset, bool $newerFirst, int $userId): Paginator
     {
         $ids = $this->doctrine->getRepository(RobotSettings::class)->findAllBotIdsByUserId($userId);
 
@@ -34,8 +34,13 @@ class RobotDataRepository extends ServiceEntityRepository
             ->where('c.data LIKE :searchTerm')
             ->setParameter('searchTerm', '%'.$searchTerm.'%')
             ->andWhere('c.botId IN (:ids)')
-            ->setParameter('ids', $ids)
-            ->setMaxResults(self::PAGINATOR_PER_PAGE)
+            ->setParameter('ids', $ids);
+        if ($newerFirst) {
+            $query->orderBy('c.id', 'DESC');
+        } else {
+            $query->orderBy('c.id', 'ASC');
+        }
+        $query->setMaxResults(self::PAGINATOR_PER_PAGE)
             ->setFirstResult($offset)
             ->getQuery()
         ;
