@@ -5,18 +5,27 @@ Web crawling engine and database management engine.
 The crawer is written in Python with the management user-interface
 written with Symfony in PHP.
 
-## Configuration
+## Requirements
+* Composer (https://getcomposer.org/)
+* Yarn (https://yarnpkg.com/)
+* Docker (https://docs.docker.com/engine/install/)
 
-1. composer install
-2. yarnpkg encore dev
-3. Bring up containers and configure the database.
+## Installation Guide
+
+### Packages
+```
+composer install
+yarnpkg encore dev
+```
+
+### Database
 
 ```
 docker-compose build
 docker-compose up
 ```
 
-4. Create schema and run migrations to seed the database.
+Create schema and run migrations to seed the database.
 
 ```
 docker exec -it slurp-apache sh
