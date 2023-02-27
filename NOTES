@@ -1,5 +1,4 @@
 SQL:
 CREATE INDEX launch_id_index ON robot_data (launch_id);
 Better cardinality.
-#CREATE INDEX index_path_launch ON robot_data (path(64), launch_id);
 
