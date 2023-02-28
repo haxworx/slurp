@@ -2,7 +2,7 @@
 
 Web crawling engine and database management engine.
 
-The crawer is written in Python with the management user-interface
+The crawler is written in Python with the management user-interface
 written with Symfony in PHP.
 
 ## Requirements
