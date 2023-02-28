@@ -3,5 +3,8 @@
 {% block title %}Schedule{% endblock %}
 
 {% block body %}
+<div class="container mt-5" align="right">
+    <p>You have used {{ robot_count }} of your {{ robot_count_max }} robots allowance.</p>
+</div>
 {{ form(form) }}
 {% endblock %}

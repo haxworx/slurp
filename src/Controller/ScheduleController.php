@@ -47,10 +47,13 @@ class ScheduleController extends AbstractController
         $form = $this->createForm(RobotSettingsType::class, $bot);
         $form->handleRequest($request);
 
+        $repository = $doctrine->getRepository(RobotSettings::class);
+        $robotCount = $repository->countByUserId($user->getId());
+        $robotCountMax = $globalSettings->getMaxRobots();
+
         if ($form->isSubmitted() && $form->isValid()) {
-            $repository = $doctrine->getRepository(RobotSettings::class);
             $robotCount = $repository->countByUserId($user->getId());
-            if ($robotCount >= $globalSettings->getMaxRobots()) {
+            if ($robotCount >= $robotCountMax) {
                 $notifier->send(new Notification('Reached maximum number of robots ('.$robotCount.')', ['browser']));
             } else {
                 $exists = $repository->domainExists($bot, $user->getId());
@@ -74,6 +77,8 @@ class ScheduleController extends AbstractController
 
         return $this->render('schedule/index.html.twig', [
             'form' => $form,
+            'robot_count' => $robotCount,
+            'robot_count_max' => $robotCountMax,
         ]);
     }
 
@@ -89,6 +94,11 @@ class ScheduleController extends AbstractController
             throw $this->createNotFoundException('No robot for id: '.$botId);
         }
 
+        $globalSettings = $doctrine->getRepository(GlobalSettings::class)->findOneBy(['id' => 1]);
+        if (!$globalSettings) {
+            throw new LogicException('No global settings found.');
+        }
+
         $form = $this->createForm(RobotSettingsType::class, $bot, [
             'save_button_label' => 'Update',
             'import_sitemaps' => $bot->ImportSitemaps(),
@@ -97,8 +107,11 @@ class ScheduleController extends AbstractController
 
         $form->handleRequest($request);
 
+        $repository = $doctrine->getRepository(RobotSettings::class);
+        $robotCount = $repository->countByUserId($user->getId());
+        $robotCountMax = $globalSettings->getMaxRobots();
+
         if ($form->isSubmitted() && $form->IsValid()) {
-            $repository = $doctrine->getRepository(RobotSettings::class);
             $exists = $repository->domainExists($bot, $user->getId());
             $same = $repository->isSameEntity($bot, $user->getId());
             if ($exists && !$same) {
@@ -115,6 +128,8 @@ class ScheduleController extends AbstractController
 
         return $this->render('schedule/index.html.twig', [
             'form' => $form,
+            'robot_count' => $robotCount,
+            'robot_count_max' => $robotCountMax,
         ]);
     }
 
