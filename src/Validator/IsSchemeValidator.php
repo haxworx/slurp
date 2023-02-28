@@ -1,6 +1,13 @@
 <?php
 
-// src/Validator/IsSchemeValidator.php
+declare(strict_types=1);
+
+/*
+ * This file is part of the slurp package.
+ * (c) ai poole <imabiggeek@slurp.ai>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace App\Validator;
 
@@ -30,7 +37,8 @@ class IsSchemeValidator extends ConstraintValidator
         if (!in_array($value, $schemes)) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ string }}', $value)
-                ->addViolation();
+                ->addViolation()
+            ;
         }
     }
 }

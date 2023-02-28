@@ -1,6 +1,13 @@
 <?php
 
-// src/Controller/SearchController.php
+declare(strict_types=1);
+
+/*
+ * This file is part of the slurp package.
+ * (c) ai poole <imabiggeek@slurp.ai>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace App\Controller;
 
@@ -27,7 +34,7 @@ class SearchController extends AbstractController
         $offset = $request->get('offset') ?? 0;
 
         if ($searchTerm) {
-            $newerFirst = ($latest === "on") ? true : false;
+            $newerFirst = ('on' === $latest) ? true : false;
             $paginator = $dataRepository->getSearchPaginator($searchTerm, $offset, $newerFirst, $user->getId());
             $count = count($paginator);
         }
