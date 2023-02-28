@@ -1,4 +1,6 @@
 SQL:
-CREATE INDEX launch_id_index ON robot_data (launch_id);
-Better cardinality.
+    CREATE INDEX launch_id_index ON robot_data (launch_id);
+    Better cardinality.
+
+    SELECT COUNT(id), DATE(time_stamp) FROM robot_data WHERE bot_id = 42 AND content_type LIKE '%image%' AND DATE(time_stamp) <= CURDATE() AND DATE(time_stamp) >= DATE_SUB(NOW(), INTERVAL 30 DAY) GROUP BY DATE(time_stamp);
 
