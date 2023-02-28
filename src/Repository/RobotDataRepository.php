@@ -34,7 +34,8 @@ class RobotDataRepository extends ServiceEntityRepository
             ->where('c.data LIKE :searchTerm')
             ->setParameter('searchTerm', '%'.$searchTerm.'%')
             ->andWhere('c.botId IN (:ids)')
-            ->setParameter('ids', $ids);
+            ->setParameter('ids', $ids)
+            ->andWhere('c.contentType LIKE \'text%\'');
         if ($newerFirst) {
             $query->orderBy('c.id', 'DESC');
         } else {
