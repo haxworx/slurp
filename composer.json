@@ -74,6 +74,7 @@
         "symfony/polyfill-php81": "*"
     },
     "scripts": {
+        "standardize": "PHP_CS_FIXER_IGNORE_ENV=1 tools/php-cs-fixer/vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --diff --verbose",
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
             "assets:install %PUBLIC_DIR%": "symfony-cmd"
