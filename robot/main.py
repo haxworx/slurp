@@ -22,6 +22,7 @@ from hypertext import Http
 class Robot:
     def __init__(self, bot_id):
         self.save_count = 0
+        self.retry_count = 0
         self.launch_id = None
         self.is_running = False
         self.has_error = False
@@ -32,8 +33,6 @@ class Robot:
         self.config = Config(self.bot_id);
         self.config.read_all()
         self.dbh = Database(self.config)
-        self.retry_count = 0
-        self.has_error = False
         self.url = self.address = "{}://{}" . format(self.config.scheme, self.config.domain_name)
         self.page_list = PageList()
 
@@ -231,9 +230,6 @@ class Robot:
             parsed_url = urlparse(self.url)
             (scheme, path, query) = (parsed_url.scheme, parsed_url.path,
                                      parsed_url.query)
-            # Ignore any URL with a query string.
-            # if len(query):
-            #    continue
             try:
                 downloader = Download(self.url, self.config.user_agent)
                 (response, code) = downloader.get()
