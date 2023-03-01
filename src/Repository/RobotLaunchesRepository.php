@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of the slurp package.
+ * (c) Al Poole <netstar@gmail.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Repository;
 
 use App\Entity\RobotLaunches;
@@ -27,7 +36,8 @@ class RobotLaunchesRepository extends ServiceEntityRepository
             ->where('c.id = :launchId')
             ->setParameter('launchId', $launchId)
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getOneOrNullResult()
+        ;
     }
 
     public function findLastLaunchByBotId(int $botId)
@@ -38,7 +48,8 @@ class RobotLaunchesRepository extends ServiceEntityRepository
             ->orderBy('c.id', 'DESC')
             ->setMaxResults(1)
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getOneOrNullResult()
+        ;
     }
 
     public function getCountByBotId(int $botId): int
@@ -48,13 +59,15 @@ class RobotLaunchesRepository extends ServiceEntityRepository
             ->where('c.botId = :botId')
             ->setParameter('botId', $botId)
             ->getQuery()
-            ->getSingleScalarResult();
+            ->getSingleScalarResult()
+        ;
     }
 
     public function getCountByBotIdAndDate(int $botId, string $date): int
     {
         $conn = $this->getEntityManager()
-            ->getConnection();
+            ->getConnection()
+        ;
         $queryBuilder = $conn->createQueryBuilder();
 
         return $queryBuilder
@@ -65,7 +78,8 @@ class RobotLaunchesRepository extends ServiceEntityRepository
             ->andWhere('DATE(start_time) = :date')
             ->setParameter('date', $date)
             ->executeQuery()
-            ->fetchOne();
+            ->fetchOne()
+        ;
     }
 
     public function save(RobotLaunches $entity, bool $flush = false): void
@@ -93,7 +107,8 @@ class RobotLaunchesRepository extends ServiceEntityRepository
             ->setParameter('botId', $botId)
             ->orderBy('c.id', 'DESC')
             ->getQuery()
-            ->getResult();
+            ->getResult()
+        ;
     }
 
     public function deleteAllByBotId(int $botId): void
@@ -103,6 +118,7 @@ class RobotLaunchesRepository extends ServiceEntityRepository
             ->where('c.botId = :botId')
             ->setParameter('botId', $botId)
             ->getQuery()
-            ->execute();
+            ->execute()
+        ;
     }
 }

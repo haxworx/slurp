@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of the slurp package.
+ * (c) Al Poole <netstar@gmail.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Repository;
 
 use App\Entity\RobotSettings;
@@ -38,7 +47,8 @@ class RobotSettingsRepository extends ServiceEntityRepository
             ->where('c.userId = :id')
             ->setParameter('id', $userId)
             ->getQuery()
-            ->getSingleScalarResult();
+            ->getSingleScalarResult()
+        ;
     }
 
     public function userOwnsBot(int $userId, int $botId): bool
@@ -49,7 +59,8 @@ class RobotSettingsRepository extends ServiceEntityRepository
             ->andWhere('c.id = :botId')
             ->setParameter('botId', $botId)
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getOneOrNullResult()
+        ;
     }
 
     public function findOneById(int $id)
@@ -58,20 +69,20 @@ class RobotSettingsRepository extends ServiceEntityRepository
             ->where('c.id = :id')
             ->setParameter('id', $id)
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getOneOrNullResult()
+        ;
     }
 
     public function findAllBotIdsByUserId($userId): array
     {
-        $result = $this->createQueryBuilder('c')
+        return $this->createQueryBuilder('c')
             ->select('c.id')
             ->where('c.userId = :id')
             ->setParameter('id', $userId)
             ->groupBy('c.id')
             ->getQuery()
-            ->getResult(AbstractQuery::HYDRATE_SCALAR_COLUMN);
-
-        return $result;
+            ->getResult(AbstractQuery::HYDRATE_SCALAR_COLUMN)
+        ;
     }
 
     public function domainExists(RobotSettings $bot, int $userId): bool
@@ -85,7 +96,8 @@ class RobotSettingsRepository extends ServiceEntityRepository
             ->andWhere('c.scheme = :scheme')
             ->setParameter('scheme', $bot->getScheme())
             ->getQuery()
-            ->getSingleScalarResult();
+            ->getSingleScalarResult()
+        ;
 
         return $n > 0 ? true : false;
     }
@@ -102,7 +114,8 @@ class RobotSettingsRepository extends ServiceEntityRepository
             ->andWhere('c.id = :botId')
             ->setParameter('botId', $bot->getId())
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getOneOrNullResult()
+        ;
     }
 
     public function remove(RobotSettings $entity, bool $flush = false): void
@@ -120,7 +133,8 @@ class RobotSettingsRepository extends ServiceEntityRepository
             ->where('c.userId = :id')
             ->setParameter('id', $userId)
             ->getQuery()
-            ->getResult();
+            ->getResult()
+        ;
     }
 
     public function findOneByUserIdAndBotId(int $userId, int $botId)
@@ -131,7 +145,8 @@ class RobotSettingsRepository extends ServiceEntityRepository
             ->andWhere('c.id = :botId')
             ->setParameter('botId', $botId)
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getOneOrNullResult()
+        ;
     }
 
     public function deleteAllByUserId(int $userId): void
@@ -141,6 +156,7 @@ class RobotSettingsRepository extends ServiceEntityRepository
             ->where('c.userId = :userId')
             ->setParameter('userId', $userId)
             ->getQuery()
-            ->execute();
+            ->execute()
+        ;
     }
 }

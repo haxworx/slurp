@@ -1,6 +1,13 @@
 <?php
 
-// src/Validator/ConfirmPasswordValidator.php
+declare(strict_types=1);
+
+/*
+ * This file is part of the slurp package.
+ * (c) Al Poole <netstar@gmail.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace App\Validator;
 
@@ -21,7 +28,8 @@ class ConfirmPasswordValidator extends ConstraintValidator
         if ($password !== $value) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ string }}', $value)
-                ->addViolation();
+                ->addViolation()
+            ;
         }
     }
 }

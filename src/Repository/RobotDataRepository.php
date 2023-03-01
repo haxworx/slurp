@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of the slurp package.
+ * (c) Al Poole <netstar@gmail.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Repository;
 
 use App\Entity\RobotData;
@@ -35,7 +44,8 @@ class RobotDataRepository extends ServiceEntityRepository
             ->setParameter('searchTerm', '%'.$searchTerm.'%')
             ->andWhere('c.botId IN (:ids)')
             ->setParameter('ids', $ids)
-            ->andWhere('c.contentType LIKE \'text%\'');
+            ->andWhere('c.contentType LIKE \'text%\'')
+        ;
         if ($newerFirst) {
             $query->orderBy('c.id', 'DESC');
         } else {
@@ -69,13 +79,15 @@ class RobotDataRepository extends ServiceEntityRepository
             ->where('c.botId = :botId')
             ->setParameter('botId', $botId)
             ->getQuery()
-            ->getSingleScalarResult();
+            ->getSingleScalarResult()
+        ;
     }
 
     public function getCountByBotIdAndDate(int $botId, string $date): int
     {
         $conn = $this->getEntityManager()
-            ->getConnection();
+            ->getConnection()
+        ;
         $queryBuilder = $conn->createQueryBuilder();
 
         return $queryBuilder
@@ -86,13 +98,15 @@ class RobotDataRepository extends ServiceEntityRepository
             ->andWhere('DATE(time_stamp) = :date')
             ->setParameter('date', $date)
             ->executeQuery()
-            ->fetchOne();
+            ->fetchOne()
+        ;
     }
 
-    function getImageCountByBotIdAndDate(int $botId, string $date): int
+    public function getImageCountByBotIdAndDate(int $botId, string $date): int
     {
         $conn = $this->getEntityManager()
-            ->getConnection();
+            ->getConnection()
+        ;
         $queryBuilder = $conn->createQueryBuilder();
 
         return $queryBuilder
@@ -104,7 +118,8 @@ class RobotDataRepository extends ServiceEntityRepository
             ->setParameter('date', $date)
             ->andWhere('content_type LIKE \'%image%\'')
             ->executeQuery()
-            ->fetchOne();
+            ->fetchOne()
+        ;
     }
 
     public function getByteCountByBotId(int $botId): int
@@ -114,7 +129,8 @@ class RobotDataRepository extends ServiceEntityRepository
             ->where('c.botId = :botId')
             ->setParameter('botId', $botId)
             ->getQuery()
-            ->getSingleScalarResult();
+            ->getSingleScalarResult()
+        ;
     }
 
     public function findRecordIdByLaunchIdAndPath(int $launchId, string $path): ?int
@@ -126,7 +142,8 @@ class RobotDataRepository extends ServiceEntityRepository
             ->setParameter('path', $path)
             ->setMaxResults(1)
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getOneOrNullResult()
+        ;
 
         return $record?->getId();
     }
@@ -156,6 +173,7 @@ class RobotDataRepository extends ServiceEntityRepository
             ->where('c.botId = :botId')
             ->setParameter('botId', $botId)
             ->getQuery()
-            ->execute();
+            ->execute()
+        ;
     }
 }

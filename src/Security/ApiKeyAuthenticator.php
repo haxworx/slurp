@@ -1,6 +1,13 @@
 <?php
 
-// src/Security/ApiKeyAuthenticator.php
+declare(strict_types=1);
+
+/*
+ * This file is part of the slurp package.
+ * (c) Al Poole <netstar@gmail.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace App\Security;
 
@@ -14,9 +21,8 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
-use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\CustomCredentials;
-use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
+use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 
 class ApiKeyAuthenticator extends AbstractAuthenticator
 {
@@ -26,6 +32,7 @@ class ApiKeyAuthenticator extends AbstractAuthenticator
     {
         $this->entityManager = $entityManager;
     }
+
     /*
      * Called on every request to decide if this authenticator should be
      * used for the request. Returning `false` will cause this authenticator
@@ -45,9 +52,8 @@ class ApiKeyAuthenticator extends AbstractAuthenticator
             throw new CustomUserMessageAuthenticationException('No API token provided');
         }
 
-
         return new SelfValidatingPassport(
-            new UserBadge($apiKey, function($apiKey) {
+            new UserBadge($apiKey, function ($apiKey) {
                 $user = $this->entityManager->getRepository(User::class)
                     ->findOneBy(['apiKey' => $apiKey])
                 ;
@@ -57,7 +63,8 @@ class ApiKeyAuthenticator extends AbstractAuthenticator
                 }
 
                 return $user;
-            }), []
+            }),
+            []
         );
 
         return new SelfValidatingPassport($user);
@@ -72,11 +79,9 @@ class ApiKeyAuthenticator extends AbstractAuthenticator
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
         $data = [
-            'message' => strtr($exception->getMessageKey(), $exception->getMessageData())
+            'message' => strtr($exception->getMessageKey(), $exception->getMessageData()),
         ];
 
         return new JsonResponse($data, Response::HTTP_UNAUTHORIZED);
     }
 }
-
-?>

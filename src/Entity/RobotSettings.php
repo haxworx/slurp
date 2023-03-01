@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of the slurp package.
+ * (c) Al Poole <netstar@gmail.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Entity;
 
 use App\Repository\RobotSettingsRepository;
@@ -39,7 +48,7 @@ class RobotSettings
     private ?bool $isRunning = false;
 
     #[ORM\Column(type: 'time', nullable: true)]
-    private $startTime = null;
+    private $startTime;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $endTime = null;

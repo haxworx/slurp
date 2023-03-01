@@ -1,6 +1,13 @@
 <?php
 
-// src/Controller/AccountDeleteController.php
+declare(strict_types=1);
+
+/*
+ * This file is part of the slurp package.
+ * (c) Al Poole <netstar@gmail.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace App\Controller;
 
@@ -31,7 +38,7 @@ class AccountDeleteController extends AbstractController
 
         // Remove all user-associated data from hereon.
 
-        $logger->info("account deleted", ['user_id' => $user->getId()]);
+        $logger->info('account deleted', ['user_id' => $user->getId()]);
 
         $botIds = $doctrine->getRepository(RobotSettings::class)->findAllBotIdsByUserId($user->getId());
 

@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of the slurp package.
+ * (c) Al Poole <netstar@gmail.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Entity;
 
 use App\Repository\RobotDataRepository;
@@ -54,7 +63,7 @@ class RobotData
     private ?int $length = null;
 
     #[ORM\Column(type: Types::BLOB)]
-    private $data = null;
+    private $data;
 
     public function getId(): ?int
     {

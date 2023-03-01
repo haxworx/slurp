@@ -1,13 +1,19 @@
 <?php
 
-// src/Controller/Api/KeyController.php
+declare(strict_types=1);
+
+/*
+ * This file is part of the slurp package.
+ * (c) Al Poole <netstar@gmail.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace App\Controller\Api;
 
-use App\Utils\ApiKey;
 use App\Service\AppLogger;
+use App\Utils\ApiKey;
 use Doctrine\Persistence\ManagerRegistry;
-use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,7 +31,7 @@ class KeyController extends AbstractController
 
         $content = json_decode($request->getContent(), false);
         if ((!$content) || (!isset($content->token))) {
-            throw new Exception('Missing parameters');
+            throw new \Exception('Missing parameters');
         }
 
         $token = $content->token;
@@ -41,7 +47,7 @@ class KeyController extends AbstractController
         $entityManager->persist($user);
         $entityManager->flush();
 
-        $logger->info("API key regeneated", ['user_id' => $user->getId()]);
+        $logger->info('API key regeneated', ['user_id' => $user->getId()]);
 
         return new JsonResponse(['api-key' => $newKey, 'message' => 'ok']);
     }

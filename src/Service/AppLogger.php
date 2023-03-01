@@ -1,19 +1,25 @@
 <?php
 
-// src/Service/AppLogger.php
+declare(strict_types=1);
+
+/*
+ * This file is part of the slurp package.
+ * (c) Al Poole <netstar@gmail.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace App\Service;
 
-use Monolog\Level;
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
 use Monolog\Formatter\JsonFormatter;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 
 class AppLogger
 {
     public function __construct()
     {
-        $this->logger = new Logger("app");
+        $this->logger = new Logger('app');
         $stream = new StreamHandler('php://stderr');
         $formatter = new JsonFormatter();
         $stream->setFormatter($formatter);

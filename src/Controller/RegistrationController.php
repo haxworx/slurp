@@ -1,13 +1,20 @@
 <?php
 
-// src/Controller/RegistrationController.php
+declare(strict_types=1);
+
+/*
+ * This file is part of the slurp package.
+ * (c) Al Poole <netstar@gmail.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\RegistrationFormType;
-use App\Utils\ApiKey;
 use App\Service\AppLogger;
+use App\Utils\ApiKey;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,7 +50,7 @@ class RegistrationController extends AbstractController
             $entityManager->flush();
 
             $logger = new AppLogger();
-            $logger->info('new registration', [ 'email' => $user->getEmail(), 'user_id' => $user->getId() ]);
+            $logger->info('new registration', ['email' => $user->getEmail(), 'user_id' => $user->getId()]);
 
             return $this->redirectToRoute('app_dashboard');
         }

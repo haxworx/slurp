@@ -27,3 +27,5 @@ yarn-error.log
 ###< symfony/webpack-encore-bundle ###
 *.swp
 .idea/*
+tools/php-cs-fixer
+.php-cs-fixer.cache

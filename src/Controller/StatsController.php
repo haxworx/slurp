@@ -1,17 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of the slurp package.
+ * (c) Al Poole <netstar@gmail.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller;
 
 use App\Entity\RobotData;
 use App\Entity\RobotLaunches;
 use App\Entity\RobotSettings;
-use App\Repository\RobotLaunchesRepository;
 use App\Repository\RobotDataRepository;
+use App\Repository\RobotLaunchesRepository;
 use App\Utils\Dates;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
@@ -67,7 +76,7 @@ class StatsController extends AbstractController
 
         $user = $this->getUser();
 
-        $frequency = $request->get('frequency') ?? "weekly";
+        $frequency = $request->get('frequency') ?? 'weekly';
 
         if (!$doctrine->getRepository(RobotSettings::class)->userOwnsBot($user->getId(), $botId)) {
             throw $this->createAccessDeniedException('User does not own bot.');
@@ -77,11 +86,11 @@ class StatsController extends AbstractController
 
         $chart = $chartBuilder->createChart(Chart::TYPE_LINE);
 
-        $epochText = "7 days ago";
-        if ($frequency === "monthly") {
-            $epochText = "1 month ago";
+        $epochText = '7 days ago';
+        if ('monthly' === $frequency) {
+            $epochText = '1 month ago';
         } else {
-            $frequency = "weekly";
+            $frequency = 'weekly';
         }
 
         $dates = Dates::createArray($epochText);

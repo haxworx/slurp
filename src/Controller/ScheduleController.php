@@ -1,6 +1,13 @@
 <?php
 
-// src/Controller/ScheduleController.php
+declare(strict_types=1);
+
+/*
+ * This file is part of the slurp package.
+ * (c) Al Poole <netstar@gmail.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace App\Controller;
 
@@ -11,7 +18,6 @@ use App\Entity\RobotLog;
 use App\Entity\RobotSettings;
 use App\Form\RobotSettingsType;
 use App\Service\AppLogger;
-use LogicException;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -41,7 +47,7 @@ class ScheduleController extends AbstractController
 
         $globalSettings = $doctrine->getRepository(GlobalSettings::class)->findOneBy(['id' => 1]);
         if (!$globalSettings) {
-            throw new LogicException('No global settings found.');
+            throw new \LogicException('No global settings found.');
         }
 
         $form = $this->createForm(RobotSettingsType::class, $bot);
@@ -68,7 +74,7 @@ class ScheduleController extends AbstractController
 
                     $notifier->send(new Notification('Robot scheduled.', ['browser']));
 
-                    $this->logger->info("robot scheduled", [ 'id' => $bot->getId(), 'name' => $bot->getName(), 'user_id' => $user->getId() ]);
+                    $this->logger->info('robot scheduled', ['id' => $bot->getId(), 'name' => $bot->getName(), 'user_id' => $user->getId()]);
 
                     return $this->redirectToRoute('app_dashboard');
                 }
@@ -96,7 +102,7 @@ class ScheduleController extends AbstractController
 
         $globalSettings = $doctrine->getRepository(GlobalSettings::class)->findOneBy(['id' => 1]);
         if (!$globalSettings) {
-            throw new LogicException('No global settings found.');
+            throw new \LogicException('No global settings found.');
         }
 
         $form = $this->createForm(RobotSettingsType::class, $bot, [
@@ -122,7 +128,7 @@ class ScheduleController extends AbstractController
                 $entityManager->flush();
                 $notifier->send(new Notification('Robot updated', ['browser']));
 
-                $this->logger->info("robot edited", [ 'id' => $bot->getId(), 'name' => $bot->getName(), 'user_id' => $user->getId() ]);
+                $this->logger->info('robot edited', ['id' => $bot->getId(), 'name' => $bot->getName(), 'user_id' => $user->getId()]);
             }
         }
 
@@ -153,7 +159,7 @@ class ScheduleController extends AbstractController
             throw $this->createNotFoundException('No robot for id: '.$botId);
         }
 
-        $this->logger->info('robot deleted', [ 'id' => $bot->getId(), 'name' => $bot->getName(), 'user_id' => $user->getId()]);
+        $this->logger->info('robot deleted', ['id' => $bot->getId(), 'name' => $bot->getName(), 'user_id' => $user->getId()]);
 
         // Remove database data.
 
