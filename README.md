@@ -15,6 +15,7 @@ written with Symfony in PHP.
 ### Packages
 ```
 composer install
+yarnpkg install
 yarnpkg encore dev
 ```
 
