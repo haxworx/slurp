@@ -17,6 +17,7 @@ class ApiKey
 {
     public static function generate(): string
     {
-        return Uuid::v4();
+        $uuid = Uuid::v4();
+        return $uuid->toRfc4122();
     }
 }
