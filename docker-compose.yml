@@ -25,11 +25,11 @@ services:
     working_dir: /var/www
     volumes:
       - ./:/var/www
-      - ./certs/mycert.crt:/etc/ssl/certs/mycert.crt
-      - ./certs/mycert.key:/etc/ssl/private/mycert.key
+      # - ./certs/mycert.crt:/etc/ssl/certs/mycert.crt
+      # - ./certs/mycert.key:/etc/ssl/private/mycert.key
     ports:
       - "8080:80"
-      - "8443:443"
+      # - "8443:443"
 
   launcher:
     container_name: slurp-launcher
