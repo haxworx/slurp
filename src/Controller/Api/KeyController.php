@@ -47,7 +47,7 @@ class KeyController extends AbstractController
         $entityManager->persist($user);
         $entityManager->flush();
 
-        $logger->info('API key regeneated', ['user_id' => $user->getId()]);
+        $logger->info('API key regenerated', ['user_id' => $user->getId()]);
 
         return new JsonResponse(['api-key' => $newKey, 'message' => 'ok']);
     }
