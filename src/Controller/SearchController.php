@@ -31,7 +31,7 @@ class SearchController extends AbstractController
 
         $searchTerm = $request->get('search') ?? null;
         $latest = $request->get('latest') ?? null;
-        $offset = $request->get('offset') ?? 0;
+        $offset = (int) $request->get('offset') ?? 0;
 
         if ($searchTerm) {
             $newerFirst = ('on' === $latest) ? true : false;
